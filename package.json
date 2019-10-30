@@ -1,0 +1,41 @@
+{
+  "name": "game-in-dots",
+  "version": "0.1.0",
+  "private": true,
+  "description": "game in dots",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "parcel public/index.html",
+    "build": "parcel build public/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VladislavMurashchenko/game-in-dots.git"
+  },
+  "author": "Vladislav Murashchenko",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/VladislavMurashchenko/game-in-dots/issues"
+  },
+  "homepage": "https://github.com/VladislavMurashchenko/game-in-dots#readme",
+  "dependencies": {
+    "prop-types": "^15.7.2",
+    "ramda": "^0.26.1",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
+    "styled-components": "^4.4.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/preset-env": "^7.6.3",
+    "@babel/preset-react": "^7.6.3",
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.16.0",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "parcel-bundler": "^1.12.4"
+  }
+}
