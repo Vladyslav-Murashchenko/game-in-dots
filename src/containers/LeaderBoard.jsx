@@ -1,7 +1,9 @@
 import React from 'react';
 
+import { Main } from '../components';
+
 const LeaderBoard = () => (
-  <div>LeaderBoard</div>
+  <Main>LeaderBoard</Main>
 );
 
 export default LeaderBoard;

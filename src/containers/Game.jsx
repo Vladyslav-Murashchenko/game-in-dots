@@ -1,7 +1,9 @@
 import React from 'react';
 
+import { Main } from '../components';
+
 const Game = () => (
-  <div>game</div>
+  <Main>Game</Main>
 );
 
 export default Game;

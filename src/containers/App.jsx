@@ -15,7 +15,21 @@ import { AppHeader } from '../components';
 
 const GlobalStyle = createGlobalStyle`
   body {
+    display: flex;
     font-family: sans-serif;
+    min-height: 100vh;
+  }
+
+  #root {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
   }
 `;
 
