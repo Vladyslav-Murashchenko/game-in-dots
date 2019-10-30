@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import App from './containers/App';
 
-const HelloMessage = () => <h1>Hi!</h1>;
-
-ReactDOM.render(<HelloMessage name="Jane" />, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'));
