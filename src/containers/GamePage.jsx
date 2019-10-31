@@ -1,5 +1,12 @@
-import React from 'react';
+import React, {
+  useState,
+  useMemo,
+  useEffect,
+} from 'react';
 import styled from 'styled-components';
+import { titleCase } from 'change-case';
+
+import * as api from '../api';
 
 import Game from './Game';
 
@@ -32,18 +39,25 @@ const Message = styled.p`
   
 `;
 
-const options = [
-  {
-    value: 'option1',
-    label: 'option1',
-  },
-  {
-    value: 'option2',
-    label: 'option2',
-  },
-];
-
 const GamePage = () => {
+  const [settings, setSettings] = useState(null);
+
+  useEffect(() => {
+    api.fetchGameSettings()
+      .then(setSettings);
+  }, []);
+
+  const modeOptions = useMemo(() => {
+    if (!settings) {
+      return [];
+    }
+
+    return Object.keys(settings).map((value) => ({
+      value,
+      label: titleCase(value),
+    }));
+  }, [settings]);
+
   const handleStartGame = (e) => {
     e.preventDefault();
   };
@@ -52,7 +66,8 @@ const GamePage = () => {
     <Main>
       <Form onSubmit={handleStartGame}>
         <DropdownSelect
-          options={options}
+          options={modeOptions}
+          placeholder="Pick game mode"
         />
         <Input
           placeholder="Enter your name"

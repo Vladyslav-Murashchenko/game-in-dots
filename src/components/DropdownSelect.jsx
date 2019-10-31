@@ -57,6 +57,7 @@ const Menu = styled.ul`
 
 const Option = styled.li`
   padding: 10px;
+  cursor: pointer;
 
   ${(props) => props.highlighted && css`
     color: #fff;
@@ -66,6 +67,7 @@ const Option = styled.li`
 
 const DropdownSelect = ({
   options,
+  placeholder,
 }) => {
   const {
     isOpen,
@@ -82,7 +84,7 @@ const DropdownSelect = ({
         {...getToggleButtonProps()}
         expanded={isOpen}
       >
-        {selectedItem ? selectedItem.label : 'Pick game mode'}
+        {selectedItem ? selectedItem.label : placeholder}
       </Button>
       <Menu {...getMenuProps()}>
         {isOpen && options.map((option, index) => (
@@ -101,6 +103,7 @@ const DropdownSelect = ({
 
 DropdownSelect.defaultProps = {
   options: [],
+  placeholder: '',
 };
 
 DropdownSelect.propTypes = {
@@ -108,6 +111,7 @@ DropdownSelect.propTypes = {
     value: T.string,
     label: T.string,
   })),
+  placeholder: T.string,
 };
 
 export default DropdownSelect;
