@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/VladislavMurashchenko/game-in-dots#readme",
   "dependencies": {
+    "downshift": "^3.4.1",
     "normalize.css": "^8.0.1",
     "prop-types": "^15.7.2",
     "ramda": "^0.26.1",
