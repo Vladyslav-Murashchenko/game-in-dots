@@ -1,7 +1,14 @@
 /* eslint react/jsx-props-no-spreading: 0 */
-import React from 'react';
-import T from 'prop-types';
+import React, {
+  useCallback,
+} from 'react';
 import styled, { css } from 'styled-components';
+import {
+  shape,
+  arrayOf,
+  string,
+  func,
+} from 'prop-types';
 import { useSelect } from 'downshift';
 
 const Wrapper = styled.div`
@@ -32,7 +39,7 @@ const Button = styled.button.attrs({
     height: 12px;
     border-bottom: 3px solid #83969b;
     border-right: 3px solid #83969b;
-    transition: 0.2s;
+    transition: 0.1s;
     transform: 
       ${({ expanded }) => (expanded ? 'translateY(8px)' : 'translateY(2px)')}
       rotate(45deg) 
@@ -66,17 +73,26 @@ const Option = styled.li`
 `;
 
 const DropdownSelect = ({
+  selected,
   options,
+  onSelect,
   placeholder,
 }) => {
+  const handleSelect = useCallback(
+    ({ selectedItem }) => onSelect(selectedItem),
+    [onSelect],
+  );
+
   const {
     isOpen,
-    selectedItem,
     getToggleButtonProps,
     getMenuProps,
     highlightedIndex,
     getItemProps,
-  } = useSelect({ items: options });
+  } = useSelect({
+    items: options,
+    onSelectedItemChange: handleSelect,
+  });
 
   return (
     <Wrapper>
@@ -84,7 +100,7 @@ const DropdownSelect = ({
         {...getToggleButtonProps()}
         expanded={isOpen}
       >
-        {selectedItem ? selectedItem.label : placeholder}
+        {selected ? selected.label : placeholder}
       </Button>
       <Menu {...getMenuProps()}>
         {isOpen && options.map((option, index) => (
@@ -102,16 +118,22 @@ const DropdownSelect = ({
 };
 
 DropdownSelect.defaultProps = {
+  selected: null,
   options: [],
   placeholder: '',
 };
 
 DropdownSelect.propTypes = {
-  options: T.arrayOf(T.shape({
-    value: T.string,
-    label: T.string,
+  selected: shape({
+    value: string,
+    label: string,
+  }),
+  options: arrayOf(shape({
+    value: string,
+    label: string,
   })),
-  placeholder: T.string,
+  onSelect: func.isRequired,
+  placeholder: string,
 };
 
 export default DropdownSelect;

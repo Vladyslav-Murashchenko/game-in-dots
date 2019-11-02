@@ -8,8 +8,8 @@ import {
   Redirect,
 } from 'react-router-dom';
 
-import GamePage from './GamePage';
-import LeaderBoardPage from './LeaderBoardPage';
+import Game from './Game';
+import LeaderBoard from './LeaderBoard';
 
 import { AppHeader } from '../components';
 
@@ -39,10 +39,10 @@ const App = () => (
     <AppHeader />
     <Switch>
       <Route path="/game">
-        <GamePage />
+        <Game />
       </Route>
       <Route path="/leader-board">
-        <LeaderBoardPage />
+        <LeaderBoard />
       </Route>
       <Redirect to="/game" />
     </Switch>
