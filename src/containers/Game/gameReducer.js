@@ -87,11 +87,10 @@ const gameReducer = R.cond([
       };
     }
 
-    const nextUnallocatedFields = R.without([state.stepField], state.unallocatedFields);
     const nextState = {
       ...state,
       computerFields: R.append(state.stepField, state.computerFields),
-      unallocatedFields: nextUnallocatedFields,
+      unallocatedFields: R.without([state.stepField], state.unallocatedFields),
     };
 
     if (nextState.computerFields.length > nextState.fieldsCount / 2) {
@@ -112,7 +111,7 @@ const gameReducer = R.cond([
 
     return {
       ...nextState,
-      stepField: getRandomArrayItem(nextUnallocatedFields),
+      stepField: getRandomArrayItem(nextState.unallocatedFields),
     };
   }],
 
