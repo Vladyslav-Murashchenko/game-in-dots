@@ -21,7 +21,9 @@ const Nav = styled.nav`
   margin: 0 20px 0 auto;
 `;
 
-const ButtonStyled = styled(Button)`
+const ButtonStyled = styled(Button).attrs({
+  type: null,
+})`
   margin: 10px;
 `;
 

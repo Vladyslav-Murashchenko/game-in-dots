@@ -1,6 +1,9 @@
 import styled from 'styled-components';
 
-const Button = styled.button`
+const Button = styled.button.attrs((props) => ({
+  type: 'button',
+  children: props.text || props.children,
+}))`
   padding: 15px 25px;
   border: 0;
 

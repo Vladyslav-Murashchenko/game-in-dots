@@ -1,22 +1,37 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import {
   number,
   arrayOf,
+  func,
 } from 'prop-types';
 import * as R from 'ramda';
 
 const Canvas = styled.div`
   display: flex;
   flex-wrap: wrap;
-  width: 60vh;
+  width: 70vw;
+  min-width: 300px;
+  max-width: 70vh;
+  border: 1px solid #888;
 `;
 
 const Field = styled.button`
   width: ${({ width }) => width};
   padding-top: ${({ width }) => `calc(${width} - 2px)`};
-  border: 1px solid #333;
+  border: 1px solid #888;
+  background: #fff;
   cursor: crosshair;
+
+  ${({ isStepField }) => isStepField && css`
+    background: #0fc9de;
+  `}
+  ${({ isComputerField }) => isComputerField && css`
+    background: #993333;
+  `}
+  ${({ isUserField }) => isUserField && css`
+    background: #339933;
+  `}
 `;
 
 const GameCanvas = ({
@@ -25,17 +40,18 @@ const GameCanvas = ({
   stepField,
   computerFields,
   userFields,
+  onFieldClick,
 }) => {
   const renderFields = R.pipe(
-    R.times(R.identity),
-    R.map((fieldIndex) => (
+    R.range(0),
+    R.map((field) => (
       <Field
-        key={fieldIndex}
+        key={field}
         width={`${100 / lineLength}%`}
-        onClick={() => console.log('fieldClick')}
-        isStepField={stepField === fieldIndex}
-        isComputerField={computerFields.includes(fieldIndex)}
-        isUserField={userFields.includes(fieldIndex)}
+        onClick={() => onFieldClick(field)}
+        isStepField={stepField === field}
+        isComputerField={computerFields.includes(field)}
+        isUserField={userFields.includes(field)}
       />
     )),
   );
@@ -57,6 +73,7 @@ GameCanvas.propTypes = {
   stepField: number,
   computerFields: arrayOf(number).isRequired,
   userFields: arrayOf(number).isRequired,
+  onFieldClick: func.isRequired,
 };
 
 export default GameCanvas;

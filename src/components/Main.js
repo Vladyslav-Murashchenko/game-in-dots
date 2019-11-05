@@ -5,7 +5,7 @@ const Main = styled.main`
   flex-direction: column;
   align-items: center;
   flex: 1;
-  padding: 20px;
+  padding: 3vw;
 `;
 
 export default Main;
