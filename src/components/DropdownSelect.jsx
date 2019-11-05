@@ -8,6 +8,7 @@ import {
   arrayOf,
   string,
   func,
+  bool,
 } from 'prop-types';
 import { useSelect } from 'downshift';
 
@@ -77,6 +78,7 @@ const DropdownSelect = ({
   options,
   onSelect,
   placeholder,
+  disabled,
 }) => {
   const handleSelect = useCallback(
     ({ selectedItem }) => onSelect(selectedItem),
@@ -99,6 +101,7 @@ const DropdownSelect = ({
       <Button
         {...getToggleButtonProps()}
         expanded={isOpen}
+        disabled={disabled}
       >
         {selected ? selected.label : placeholder}
       </Button>
@@ -121,6 +124,7 @@ DropdownSelect.defaultProps = {
   selected: null,
   options: [],
   placeholder: '',
+  disabled: false,
 };
 
 DropdownSelect.propTypes = {
@@ -134,6 +138,7 @@ DropdownSelect.propTypes = {
   })),
   onSelect: func.isRequired,
   placeholder: string,
+  disabled: bool,
 };
 
 export default DropdownSelect;

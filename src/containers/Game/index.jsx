@@ -21,39 +21,38 @@ import {
   Main,
   DropdownSelect,
   Button,
+  InputField,
 } from '../../components';
+
+const InputFieldStyled = styled(InputField)`
+  margin: 0 10px;
+`;
 
 const Form = styled.form`
   display: flex;
-`;
-
-const Input = styled.input`
-  padding: 15px 25px;
-  margin: 0 10px;
-  border: 2px solid #cfd8dc;
-  background-color: #f3f3f3;
-  font-size: 1.2rem;
-  color: #707577;
-  border-radius: 10px;
 `;
 
 const Message = styled.p`
   min-height: 1.6rem;
   margin: 20px;
   color: #99a6ab;
-  font-size: 1.2rem;
-  line-height: 1.6rem;
+  font-size: 1.6rem;
+  line-height: 2rem;
 `;
 
 const Game = () => {
   const [settings, setSettings] = useState(null);
   const [selectedMode, setSelectedMode] = useState(null);
+
+  const [playerName, setPlayerName] = useState('');
+  const [playerNameError, setPlayerNameError] = useState('');
+
   const [gameState, gameDispatch] = useReducer(gameReducer, initialGameState);
 
   const timerRef = useRef(null);
 
   const {
-    userFields,
+    playerFields,
     computerFields,
     stepField,
     isPlaying,
@@ -100,8 +99,21 @@ const Game = () => {
   const lineLength = selectedMode && settings[selectedMode.value].field;
   const fieldsCount = lineLength && lineLength ** 2;
 
+  const handleFieldChange = (e) => {
+    if (playerNameError) {
+      setPlayerNameError('');
+    }
+
+    setPlayerName(e.target.value);
+  };
+
   const handleStartGame = () => {
-    gameDispatch(gameActions.start(fieldsCount));
+    if (!playerName) {
+      setPlayerNameError('Required');
+      return;
+    }
+
+    gameDispatch(gameActions.start(fieldsCount, playerName));
   };
 
   const handleLeaveGame = () => {
@@ -109,8 +121,8 @@ const Game = () => {
     clearTimeout(timerRef.current);
   };
 
-  const handleUserCatchField = (field) => {
-    gameDispatch(gameActions.userCatchField(field));
+  const handleCatchField = (field) => {
+    gameDispatch(gameActions.catchField(field));
   };
 
   return (
@@ -118,14 +130,19 @@ const Game = () => {
       <Form>
         <DropdownSelect
           selected={selectedMode}
-          onSelect={setSelectedMode}
+          onSelect={R.pipe(setSelectedMode, handleLeaveGame)}
           options={modeOptions}
+          disabled={isPlaying}
           placeholder="Pick game mode"
         />
-        <Input
+        <InputFieldStyled
+          value={playerName}
+          onChange={handleFieldChange}
+          disabled={isPlaying}
           placeholder="Enter your name"
+          error={playerNameError}
         />
-        {!isPlaying && stepField == null && (
+        {!isPlaying && stepField == null && selectedMode && (
           <Button
             text="Play"
             onClick={handleStartGame}
@@ -150,8 +167,8 @@ const Game = () => {
           lineLength={lineLength}
           fieldsCount={fieldsCount}
           stepField={stepField}
-          onFieldClick={handleUserCatchField}
-          userFields={userFields}
+          onFieldClick={handleCatchField}
+          playerFields={playerFields}
           computerFields={computerFields}
         />
       )}

@@ -3,63 +3,69 @@ import * as R from 'ramda';
 
 import { ifAction, getRandomArrayItem } from '../../utils';
 
-const start = createAct('START', (fieldsCount) => ({ fieldsCount }));
+const start = createAct('START', (fieldsCount, playerName) => ({
+  fieldsCount,
+  playerName,
+}));
 const leave = createAct('LEAVE');
 const step = createAct('STEP');
-const userCatchField = createAct('USER_CATCH_FIELD', (field) => ({ field }));
+const catchField = createAct('CATCH_FIELD', (field) => ({ field }));
 
 export const gameActions = {
   start,
   leave,
   step,
-  userCatchField,
+  catchField,
 };
 
 export const initialGameState = {
-  userСaughtField: false,
-  userFields: [],
+  playerName: null,
+  playerСaughtField: false,
+  playerFields: [],
   computerFields: [],
   unallocatedFields: [],
   stepField: null,
   fieldsCount: null,
   isPlaying: false,
-  message: 'Catch the blue squares!',
+  message: 'Press play to start! And catch the blue squares!',
+  winner: null,
 };
 
 const noWinner = (state) => (
-  !state.unallocatedFields.length && state.computerFields.length === state.userFields.length
+  !state.unallocatedFields.length && state.computerFields.length === state.playerFields.length
 );
 
 const gameReducer = R.cond([
-  [ifAction(start), (state, { fieldsCount }) => {
-    const unallocatedFields = R.range(0, fieldsCount);
+  [ifAction(start), (state, {
+    fieldsCount,
+    playerName,
+  }) => ({
+    ...state,
+    fieldsCount,
+    playerName,
+    isPlaying: true,
+    unallocatedFields: R.range(0, fieldsCount),
+    message: 'Catch the blue squares!',
+  })],
 
-    return {
-      ...state,
-      isPlaying: true,
-      fieldsCount,
-      unallocatedFields,
-      stepField: getRandomArrayItem(unallocatedFields),
-    };
-  }],
-
-  [ifAction(userCatchField), (state, { field }) => {
-    if (field !== state.stepField) {
+  [ifAction(catchField), (state, { field }) => {
+    if (!state.isPlaying || field !== state.stepField) {
       return state;
     }
 
     const nextState = {
       ...state,
-      userСaughtField: true,
-      userFields: R.append(field, state.userFields),
+      playerСaughtField: true,
+      playerFields: R.append(field, state.playerFields),
       unallocatedFields: R.without([field], state.unallocatedFields),
     };
 
-    if (nextState.userFields.length > nextState.fieldsCount / 2) {
+    if (nextState.playerFields.length > nextState.fieldsCount / 2) {
       return {
         ...nextState,
         isPlaying: false,
-        message: 'You win!',
+        message: `${state.playerName} won!`,
+        winner: state.playerName,
       };
     }
 
@@ -67,7 +73,7 @@ const gameReducer = R.cond([
       return {
         ...nextState,
         isPlaying: false,
-        message: 'Nobody win :/',
+        message: 'Nobody won :/',
       };
     }
 
@@ -75,14 +81,10 @@ const gameReducer = R.cond([
   }],
 
   [ifAction(step), (state) => {
-    if (!state.isPlaying) {
-      return state;
-    }
-
-    if (state.userСaughtField) {
+    if (state.playerСaughtField) {
       return {
         ...state,
-        userСaughtField: false,
+        playerСaughtField: false,
         stepField: getRandomArrayItem(state.unallocatedFields),
       };
     }
@@ -97,7 +99,8 @@ const gameReducer = R.cond([
       return {
         ...nextState,
         isPlaying: false,
-        message: 'Computer win :( Try again!',
+        message: 'Computer won :( Try again!',
+        winner: 'Computer AI',
       };
     }
 
@@ -105,7 +108,7 @@ const gameReducer = R.cond([
       return {
         ...nextState,
         isPlaying: false,
-        message: 'Nobody win :/',
+        message: 'Nobody won :/',
       };
     }
 

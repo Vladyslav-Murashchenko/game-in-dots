@@ -29,7 +29,7 @@ const Field = styled.button`
   ${({ isComputerField }) => isComputerField && css`
     background: #993333;
   `}
-  ${({ isUserField }) => isUserField && css`
+  ${({ isPlayerField }) => isPlayerField && css`
     background: #339933;
   `}
 `;
@@ -39,7 +39,7 @@ const GameCanvas = ({
   fieldsCount,
   stepField,
   computerFields,
-  userFields,
+  playerFields,
   onFieldClick,
 }) => {
   const renderFields = R.pipe(
@@ -51,7 +51,7 @@ const GameCanvas = ({
         onClick={() => onFieldClick(field)}
         isStepField={stepField === field}
         isComputerField={computerFields.includes(field)}
-        isUserField={userFields.includes(field)}
+        isPlayerField={playerFields.includes(field)}
       />
     )),
   );
@@ -72,7 +72,7 @@ GameCanvas.propTypes = {
   fieldsCount: number.isRequired,
   stepField: number,
   computerFields: arrayOf(number).isRequired,
-  userFields: arrayOf(number).isRequired,
+  playerFields: arrayOf(number).isRequired,
   onFieldClick: func.isRequired,
 };
 
