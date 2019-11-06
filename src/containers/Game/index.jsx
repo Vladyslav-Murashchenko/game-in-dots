@@ -23,6 +23,7 @@ import {
   DropdownSelect,
   Button,
   InputField,
+  Loader,
 } from '../../components';
 
 const InputFieldStyled = styled(InputField)`
@@ -71,7 +72,9 @@ const Game = () => {
       return;
     }
 
-    api.postWinner(winner, dateFormatter.format(new Date()));
+    const date = dateFormatter.format(new Date());
+
+    api.postWinner(winner, date);
   }, [winner]);
 
   const modeOptions = useMemo(() => {
@@ -135,6 +138,10 @@ const Game = () => {
     gameDispatch(gameActions.catchField(field));
   };
 
+  if (!selectedMode) {
+    return <Loader />;
+  }
+
   return (
     <Main>
       <Form>
@@ -152,7 +159,7 @@ const Game = () => {
           placeholder="Enter your name"
           error={playerNameError}
         />
-        {!isPlaying && stepField == null && selectedMode && (
+        {!isPlaying && stepField == null && (
           <Button
             text="Play"
             onClick={handleStartGame}
@@ -172,16 +179,14 @@ const Game = () => {
         )}
       </Form>
       <Message>{message}</Message>
-      {selectedMode && (
-        <GameCanvas
-          lineLength={lineLength}
-          fieldsCount={fieldsCount}
-          stepField={stepField}
-          onFieldClick={handleCatchField}
-          playerFields={playerFields}
-          computerFields={computerFields}
-        />
-      )}
+      <GameCanvas
+        lineLength={lineLength}
+        fieldsCount={fieldsCount}
+        stepField={stepField}
+        onFieldClick={handleCatchField}
+        playerFields={playerFields}
+        computerFields={computerFields}
+      />
     </Main>
   );
 };
