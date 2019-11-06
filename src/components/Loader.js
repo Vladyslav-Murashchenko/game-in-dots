@@ -20,7 +20,8 @@ const Loader = styled.div`
     border-top: 50px solid #089bd4;
     border-left: 50px solid #d60152;
     border-right: 50px solid #16a953;
-    border-bottom: 50px solid #d8e41b
+    border-bottom: 50px solid #d8e41b;
+    border-radius: 5px;
     animation: 1s ${rotate} ease infinite;
   }
 `;
