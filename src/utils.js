@@ -1,14 +1,38 @@
 import * as R from 'ramda';
 
-export const ifAction = (...actionCreators) => (_, action) => (
-  R.all(R.eqProps('type', action), actionCreators)
+const defaultActionCreator = () => ({});
+
+export const createAction = (type, typelessActionCreator = defaultActionCreator) => {
+  const actionCreator = (...args) => ({
+    ...typelessActionCreator(...args),
+    type,
+  });
+
+  return Object.assign(actionCreator, {
+    type,
+    toString: () => type,
+  });
+};
+
+
+export const checkAction = (actionCreatorType) => (_, action) => (
+  R.equals(actionCreatorType, action.type)
 );
 
-export const randomInteger = (maxInt) => Math.floor(Math.random() * (maxInt + 1));
-export const getRandomArrayItem = R.converge(
-  R.nth,
-  [R.pipe(R.length, R.dec, randomInteger), R.identity],
+const headLens = R.lensIndex(0);
+
+export const createReducer = R.pipe(
+  R.toPairs,
+  R.map(R.over(headLens, checkAction)),
+  R.append([R.T, R.identity]),
+  R.cond,
 );
+
+const randomInteger = (maxInt) => Math.floor(Math.random() * (maxInt + 1));
+
+const getRandomArrayIndex = R.pipe(R.length, R.dec, randomInteger);
+
+export const getRandomArrayItem = R.converge(R.nth, [getRandomArrayIndex, R.identity]);
 
 export const dateFormatter = new Intl.DateTimeFormat('en-GB', {
   hour: '2-digit',

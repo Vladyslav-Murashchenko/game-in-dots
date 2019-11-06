@@ -1,15 +1,18 @@
-import createAct from 'redux-create-act';
 import * as R from 'ramda';
 
-import { ifAction, getRandomArrayItem } from '../../utils';
+import {
+  createAction,
+  createReducer,
+  getRandomArrayItem,
+} from '../../utils';
 
-const start = createAct('START', (fieldsCount, playerName) => ({
+const start = createAction('START', (fieldsCount, playerName) => ({
   fieldsCount,
   playerName,
 }));
-const leave = createAct('LEAVE');
-const step = createAct('STEP');
-const catchField = createAct('CATCH_FIELD', (field) => ({ field }));
+const leave = createAction('LEAVE');
+const step = createAction('STEP');
+const catchField = createAction('CATCH_FIELD', (field) => ({ field }));
 
 export const gameActions = {
   start,
@@ -20,7 +23,7 @@ export const gameActions = {
 
 export const initialGameState = {
   playerName: null,
-  playerСaughtField: false,
+  playerCaughtField: false,
   playerFields: [],
   computerFields: [],
   unallocatedFields: [],
@@ -35,27 +38,26 @@ const noWinner = (state) => (
   !state.unallocatedFields.length && state.computerFields.length === state.playerFields.length
 );
 
-const gameReducer = R.cond([
-  [ifAction(start), (state, {
-    fieldsCount,
-    playerName,
-  }) => ({
+const gameReducer = createReducer({
+  [start]: (state, action) => ({
     ...state,
-    fieldsCount,
-    playerName,
+    fieldsCount: action.fieldsCount,
+    playerName: action.playerName,
     isPlaying: true,
-    unallocatedFields: R.range(0, fieldsCount),
+    unallocatedFields: R.range(0, action.fieldsCount),
     message: 'Catch the blue squares!',
-  })],
+  }),
 
-  [ifAction(catchField), (state, { field }) => {
+  [catchField]: (state, action) => {
+    const { field } = action;
+
     if (!state.isPlaying || field !== state.stepField) {
       return state;
     }
 
     const nextState = {
       ...state,
-      playerСaughtField: true,
+      playerCaughtField: true,
       playerFields: R.append(field, state.playerFields),
       unallocatedFields: R.without([field], state.unallocatedFields),
     };
@@ -78,13 +80,13 @@ const gameReducer = R.cond([
     }
 
     return nextState;
-  }],
+  },
 
-  [ifAction(step), (state) => {
-    if (state.playerСaughtField) {
+  [step]: (state) => {
+    if (state.playerCaughtField) {
       return {
         ...state,
-        playerСaughtField: false,
+        playerCaughtField: false,
         stepField: getRandomArrayItem(state.unallocatedFields),
       };
     }
@@ -116,11 +118,9 @@ const gameReducer = R.cond([
       ...nextState,
       stepField: getRandomArrayItem(nextState.unallocatedFields),
     };
-  }],
+  },
 
-  [ifAction(leave), R.always(initialGameState)],
-
-  [R.T, R.identity],
-]);
+  [leave]: () => initialGameState,
+});
 
 export default gameReducer;
