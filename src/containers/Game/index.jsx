@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import * as R from 'ramda';
 import { titleCase } from 'change-case';
 
+import { dateFormatter } from '../../utils';
 import * as api from '../../api';
 import gameReducer, {
   initialGameState,
@@ -57,12 +58,21 @@ const Game = () => {
     stepField,
     isPlaying,
     message,
+    winner,
   } = gameState;
 
   useEffect(() => {
     api.fetchGameSettings()
       .then(setSettings);
   }, []);
+
+  useEffect(() => {
+    if (!winner) {
+      return;
+    }
+
+    api.postWinner(winner, dateFormatter.format(new Date()));
+  }, [winner]);
 
   const modeOptions = useMemo(() => {
     const getModeOptions = R.pipe(

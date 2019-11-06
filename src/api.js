@@ -9,3 +9,16 @@ export const fetchWinners = () => (
   fetch(`${apiUrl}/winners`)
     .then((res) => res.json())
 );
+
+export const postWinner = (winner, date) => (
+  fetch(`${apiUrl}/winners/`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      winner,
+      date,
+    }),
+  })
+);
