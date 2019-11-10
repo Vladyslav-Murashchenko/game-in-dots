@@ -17,13 +17,13 @@ const App = () => (
   <Router>
     <AppHeader />
     <Switch>
-      <Route path="/game">
+      <Route path="/">
         <Game />
       </Route>
       <Route path="/leader-board">
         <LeaderBoard />
       </Route>
-      <Redirect to="/game" />
+      <Redirect to="/" />
     </Switch>
   </Router>
 );
