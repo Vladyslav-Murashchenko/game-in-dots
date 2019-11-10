@@ -8,6 +8,7 @@ const Main = styled.main`
   padding: 3vw;
 
   @media (max-width: 800px) {
+    padding-top: 2rem;
     width: 100%;
     max-width: 600px;
     margin: 0 auto;

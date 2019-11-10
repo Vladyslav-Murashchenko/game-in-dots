@@ -2,7 +2,7 @@ import 'normalize.css';
 import './App.css';
 import React from 'react';
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Switch,
   Route,
   Redirect,
@@ -17,13 +17,13 @@ const App = () => (
   <Router>
     <AppHeader />
     <Switch>
-      <Route path="/">
+      <Route path="/game">
         <Game />
       </Route>
       <Route path="/leader-board">
         <LeaderBoard />
       </Route>
-      <Redirect to="/" />
+      <Redirect to="/game" />
     </Switch>
   </Router>
 );

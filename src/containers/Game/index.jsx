@@ -38,7 +38,6 @@ const Form = styled.form`
 
   @media (max-width: 800px) {
     width: 100%;
-    padding-top: 1.5rem;
 
     > *:not(:last-child) {
       margin-bottom: 1.5rem;

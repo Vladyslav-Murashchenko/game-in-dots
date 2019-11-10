@@ -23,7 +23,7 @@ const Wrapper = styled.div`
 `;
 
 const Heading = styled.h2`
-  margin-top: 0;
+  margin: 0 0 1.5rem;
   font-size: 2rem;
   color: #707577;
   text-transform: uppercase;
