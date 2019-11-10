@@ -4,6 +4,10 @@ const Button = styled.button.attrs((props) => ({
   type: 'button',
   children: props.text || props.children,
 }))`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   padding: 15px 25px;
   border: 0;
 

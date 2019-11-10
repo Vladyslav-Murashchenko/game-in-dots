@@ -15,20 +15,24 @@ import {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  width: 100%;
+
+  @media (min-width: 800px) {
+    width: 80vw;
+  }
 `;
 
 const Heading = styled.h2`
   margin-top: 0;
-  font-size: 3rem;
+  font-size: 2rem;
   color: #707577;
+  text-transform: uppercase;
 `;
 
 const Winners = styled.ul`
   list-style: none;
   padding: 0;
   margin: 0;
-  min-width: 50vw;
 `;
 
 const Winner = styled.li`
@@ -39,6 +43,10 @@ const Winner = styled.li`
   background: #cfd8dc;
 
   margin: 10px 0;
+
+  @media (max-width: 800px) {
+    flex-direction: column;
+  }
 `;
 
 const Name = styled.div`

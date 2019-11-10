@@ -7,7 +7,8 @@ import {
 } from 'prop-types';
 
 const Wrapper = styled.div`
-  display: inline-block;
+  display: flex;
+  flex-direction: column;
   position: relative;
 `;
 

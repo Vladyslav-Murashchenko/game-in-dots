@@ -17,6 +17,8 @@ const GlobalStyle = createGlobalStyle`
   body {
     display: flex;
     font-family: sans-serif;
+    min-width: 320px;
+    height: 450px;
     min-height: 100vh;
     overflow-y: scroll;
   }

@@ -27,16 +27,32 @@ import {
 } from '../../components';
 
 const InputFieldStyled = styled(InputField)`
-  margin: 0 10px;
+  @media (min-width: 800px) {
+    margin: 0 10px;
+  }
 `;
 
 const Form = styled.form`
   display: flex;
+  flex-direction: column;
+
+  @media (max-width: 800px) {
+    width: 100%;
+    padding-top: 1.5rem;
+
+    > *:not(:last-child) {
+      margin-bottom: 1.5rem;
+    }
+  }
+  
+  @media (min-width: 800px) {
+    flex-direction: row;
+  }
 `;
 
 const Message = styled.p`
   min-height: 1.6rem;
-  margin: 20px;
+  margin: 20px auto;
   color: #99a6ab;
   font-size: 1.6rem;
   line-height: 2rem;

@@ -14,6 +14,7 @@ import { useSelect } from 'downshift';
 
 const Wrapper = styled.div`
   display: flex;
+  flex-direction: column;
   position: relative;
 `;
 
@@ -61,6 +62,7 @@ const Menu = styled.ul`
   list-style: none;
   overflow-y: auto;
   background: #fff;
+  z-index: 1;
 `;
 
 const Option = styled.li`

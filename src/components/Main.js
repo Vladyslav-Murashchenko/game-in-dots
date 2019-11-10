@@ -6,6 +6,12 @@ const Main = styled.main`
   align-items: center;
   flex: 1;
   padding: 3vw;
+
+  @media (max-width: 800px) {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+  }
 `;
 
 export default Main;

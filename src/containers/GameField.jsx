@@ -11,15 +11,22 @@ const Field = styled.div`
   display: flex;
   flex-wrap: wrap;
   width: 70vw;
-  min-width: 300px;
   max-width: 70vh;
   border: 1px solid #888;
+
+  @media (max-width: 800px) {
+    width: 100%;
+    max-width: 90vh;
+  }
 `;
+
+const cellBorderWidth = 1;
 
 const Cell = styled.button`
   width: ${({ width }) => width};
-  padding-top: ${({ width }) => `calc(${width} - 2px)`};
-  border: 1px solid #888;
+  padding: 0;
+  padding-top: ${({ width }) => `calc(${width} - ${cellBorderWidth * 2}px)`};
+  border: ${cellBorderWidth}px solid #888;
   background: #fff;
   cursor: crosshair;
 
