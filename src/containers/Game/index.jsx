@@ -16,7 +16,7 @@ import gameReducer, {
   gameActions,
 } from './gameReducer';
 
-import GameCanvas from '../GameCanvas';
+import GameField from '../GameField';
 
 import {
   Main,
@@ -54,9 +54,9 @@ const Game = () => {
   const timerRef = useRef(null);
 
   const {
-    playerFields,
-    computerFields,
-    stepField,
+    playerCells,
+    computerCells,
+    stepCell,
     isPlaying,
     message,
     winner,
@@ -107,12 +107,12 @@ const Game = () => {
 
     // eslint-disable-next-line consistent-return
     return () => clearTimeout(timerRef.current);
-  }, [stepField, isPlaying]);
+  }, [stepCell, isPlaying]);
 
   const lineLength = selectedMode && settings[selectedMode.value].field;
-  const fieldsCount = lineLength && lineLength ** 2;
+  const cellsCount = lineLength && lineLength ** 2;
 
-  const handleFieldChange = (e) => {
+  const handleNameChange = (e) => {
     if (playerNameError) {
       setPlayerNameError('');
     }
@@ -126,7 +126,7 @@ const Game = () => {
       return;
     }
 
-    gameDispatch(gameActions.start(fieldsCount, playerName));
+    gameDispatch(gameActions.start(cellsCount, playerName));
   };
 
   const handleLeaveGame = () => {
@@ -134,8 +134,8 @@ const Game = () => {
     clearTimeout(timerRef.current);
   };
 
-  const handleCatchField = (field) => {
-    gameDispatch(gameActions.catchField(field));
+  const handleCellClick = (cell) => {
+    gameDispatch(gameActions.cellClick(cell));
   };
 
   if (!selectedMode) {
@@ -154,18 +154,18 @@ const Game = () => {
         />
         <InputFieldStyled
           value={playerName}
-          onChange={handleFieldChange}
+          onChange={handleNameChange}
           disabled={isPlaying}
           placeholder="Enter your name"
           error={playerNameError}
         />
-        {!isPlaying && stepField == null && (
+        {!isPlaying && stepCell == null && (
           <Button
             text="Play"
             onClick={handleStartGame}
           />
         )}
-        {!isPlaying && stepField != null && (
+        {!isPlaying && stepCell != null && (
           <Button
             text="Play Again"
             onClick={R.pipe(handleLeaveGame, handleStartGame)}
@@ -179,13 +179,13 @@ const Game = () => {
         )}
       </Form>
       <Message>{message}</Message>
-      <GameCanvas
+      <GameField
         lineLength={lineLength}
-        fieldsCount={fieldsCount}
-        stepField={stepField}
-        onFieldClick={handleCatchField}
-        playerFields={playerFields}
-        computerFields={computerFields}
+        cellsCount={cellsCount}
+        stepCell={stepCell}
+        onCellClick={handleCellClick}
+        playerCells={playerCells}
+        computerCells={computerCells}
       />
     </Main>
   );

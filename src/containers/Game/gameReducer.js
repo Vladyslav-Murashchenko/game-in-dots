@@ -6,63 +6,63 @@ import {
   getRandomArrayItem,
 } from '../../utils';
 
-const start = createAction('START', (fieldsCount, playerName) => ({
-  fieldsCount,
+const start = createAction('START', (cellsCount, playerName) => ({
+  cellsCount,
   playerName,
 }));
 const leave = createAction('LEAVE');
 const step = createAction('STEP');
-const catchField = createAction('CATCH_FIELD', (field) => ({ field }));
+const cellClick = createAction('CELL_CLICK', (cell) => ({ cell }));
 
 export const gameActions = {
   start,
   leave,
   step,
-  catchField,
+  cellClick,
 };
 
 export const initialGameState = {
   playerName: null,
-  playerCaughtField: false,
-  playerFields: [],
-  computerFields: [],
-  unallocatedFields: [],
-  stepField: null,
-  fieldsCount: null,
+  playerCaughtCell: false,
+  playerCells: [],
+  computerCells: [],
+  unallocatedCells: [],
+  stepCell: null,
+  cellsCount: null,
   isPlaying: false,
   message: 'Press play to start! And catch the blue squares!',
   winner: null,
 };
 
 const noWinner = (state) => (
-  !state.unallocatedFields.length && state.computerFields.length === state.playerFields.length
+  !state.unallocatedCells.length && state.computerCells.length === state.playerCells.length
 );
 
 const gameReducer = createReducer({
   [start]: (state, action) => ({
     ...state,
-    fieldsCount: action.fieldsCount,
+    cellsCount: action.cellsCount,
     playerName: action.playerName,
     isPlaying: true,
-    unallocatedFields: R.range(0, action.fieldsCount),
+    unallocatedCells: R.range(0, action.cellsCount),
     message: 'Catch the blue squares!',
   }),
 
-  [catchField]: (state, action) => {
-    const { field } = action;
+  [cellClick]: (state, action) => {
+    const { cell } = action;
 
-    if (!state.isPlaying || field !== state.stepField) {
+    if (!state.isPlaying || cell !== state.stepCell) {
       return state;
     }
 
     const nextState = {
       ...state,
-      playerCaughtField: true,
-      playerFields: R.append(field, state.playerFields),
-      unallocatedFields: R.without([field], state.unallocatedFields),
+      playerCaughtCell: true,
+      playerCells: R.append(cell, state.playerCells),
+      unallocatedCells: R.without([cell], state.unallocatedCells),
     };
 
-    if (nextState.playerFields.length > nextState.fieldsCount / 2) {
+    if (nextState.playerCells.length > nextState.cellsCount / 2) {
       return {
         ...nextState,
         isPlaying: false,
@@ -83,21 +83,21 @@ const gameReducer = createReducer({
   },
 
   [step]: (state) => {
-    if (state.playerCaughtField) {
+    if (state.playerCaughtCell) {
       return {
         ...state,
-        playerCaughtField: false,
-        stepField: getRandomArrayItem(state.unallocatedFields),
+        playerCaughtCell: false,
+        stepCell: getRandomArrayItem(state.unallocatedCells),
       };
     }
 
     const nextState = {
       ...state,
-      computerFields: R.append(state.stepField, state.computerFields),
-      unallocatedFields: R.without([state.stepField], state.unallocatedFields),
+      computerCells: R.append(state.stepCell, state.computerCells),
+      unallocatedCells: R.without([state.stepCell], state.unallocatedCells),
     };
 
-    if (nextState.computerFields.length > nextState.fieldsCount / 2) {
+    if (nextState.computerCells.length > nextState.cellsCount / 2) {
       return {
         ...nextState,
         isPlaying: false,
@@ -116,7 +116,7 @@ const gameReducer = createReducer({
 
     return {
       ...nextState,
-      stepField: getRandomArrayItem(nextState.unallocatedFields),
+      stepCell: getRandomArrayItem(nextState.unallocatedCells),
     };
   },
 

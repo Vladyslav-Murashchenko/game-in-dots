@@ -14,8 +14,7 @@ export const createAction = (type, typelessActionCreator = defaultActionCreator)
   });
 };
 
-
-export const checkAction = (actionCreatorType) => (_, action) => (
+const checkAction = (actionCreatorType) => (_, action) => (
   R.equals(actionCreatorType, action.type)
 );
 
@@ -32,7 +31,7 @@ const randomInteger = (maxInt) => Math.floor(Math.random() * (maxInt + 1));
 
 const getRandomArrayIndex = R.pipe(R.length, R.dec, randomInteger);
 
-export const getRandomArrayItem = R.converge(R.nth, [getRandomArrayIndex, R.identity]);
+export const getRandomArrayItem = (arr) => arr[getRandomArrayIndex(arr)];
 
 export const dateFormatter = new Intl.DateTimeFormat('en-GB', {
   hour: '2-digit',
