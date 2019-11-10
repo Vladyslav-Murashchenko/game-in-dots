@@ -9,8 +9,11 @@ import styled from 'styled-components';
 import * as R from 'ramda';
 import { titleCase } from 'change-case';
 
-import { dateFormatter } from '../../utils';
 import * as api from '../../api';
+import {
+  dateFormatter,
+  preventDefault,
+} from '../../utils';
 import gameReducer, {
   initialGameState,
   gameActions,
@@ -159,7 +162,7 @@ const Game = () => {
 
   return (
     <Main>
-      <Form>
+      <Form onSubmit={preventDefault}>
         <DropdownSelect
           selected={selectedMode}
           onSelect={R.pipe(setSelectedMode, handleLeaveGame)}

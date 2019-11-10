@@ -40,3 +40,9 @@ export const dateFormatter = new Intl.DateTimeFormat('en-GB', {
   month: 'long',
   day: '2-digit',
 });
+
+export const preventDefault = (e) => {
+  e.preventDefault();
+
+  return e;
+};
