@@ -1,6 +1,6 @@
 import 'normalize.css';
+import './App.css';
 import React from 'react';
-import { createGlobalStyle } from 'styled-components';
 import {
   BrowserRouter as Router,
   Switch,
@@ -13,32 +13,8 @@ import LeaderBoard from './LeaderBoard';
 
 import { AppHeader } from '../components';
 
-const GlobalStyle = createGlobalStyle`
-  body {
-    display: flex;
-    font-family: sans-serif;
-    min-width: 320px;
-    height: 450px;
-    min-height: 100vh;
-    overflow-y: scroll;
-  }
-
-  #root {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-  }
-
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-  }
-`;
-
 const App = () => (
   <Router>
-    <GlobalStyle />
     <AppHeader />
     <Switch>
       <Route path="/game">

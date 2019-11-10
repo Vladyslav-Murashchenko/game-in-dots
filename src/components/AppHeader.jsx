@@ -34,7 +34,6 @@ const Nav = styled.nav`
   @media (max-width: 800px) {
     width: 275px;
   }
-  /* margin: 0 20px 0 auto; */
 `;
 
 const ButtonStyled = styled(Button).attrs({
