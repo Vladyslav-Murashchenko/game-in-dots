@@ -1,6 +1,6 @@
 import * as R from 'ramda';
 
-const defaultActionCreator = () => ({});
+const defaultActionCreator = (payload = null) => ({ payload });
 
 export const createAction = (type, typelessActionCreator = defaultActionCreator) => {
   const actionCreator = (...args) => ({
@@ -14,24 +14,47 @@ export const createAction = (type, typelessActionCreator = defaultActionCreator)
   });
 };
 
-const checkAction = (actionCreatorType) => (_, action) => (
-  R.equals(actionCreatorType, action.type)
+const toCheckAction = (caseActionType) => (_, action) => (
+  R.equals(caseActionType, action.type)
 );
 
-const headLens = R.lensIndex(0);
+const toHandleAction = (reducer) => (state, action) => reducer(action)(state);
 
+const actionTypeLens = R.lensIndex(0);
+const reducerLens = R.lensIndex(1);
+
+/**
+ * convert object like:
+ * key - actionType = string
+ * value - case reducer = action => state => transformation
+ * to checkAction, handleAction pairts
+ * add default case
+ * wrap to ramda condition helper
+ * */
 export const createReducer = R.pipe(
   R.toPairs,
-  R.map(R.over(headLens, checkAction)),
-  R.append([R.T, R.identity]),
+  R.map(R.over(actionTypeLens, toCheckAction)),
+  R.map(R.over(reducerLens, toHandleAction)),
+  R.append([R.T, R.identity]), // default case
   R.cond,
 );
 
-const randomInteger = (maxInt) => Math.floor(Math.random() * (maxInt + 1));
+export const getRandomArrayItem = (arr, random = 0.5) => {
+  if (!arr.length) {
+    throw new Error('Cannot get random item from empty array');
+  }
 
-const getRandomArrayIndex = R.pipe(R.length, R.dec, randomInteger);
+  return arr[Math.floor(random * arr.length)];
+};
 
-export const getRandomArrayItem = (arr) => arr[getRandomArrayIndex(arr)];
+const reduceArr = R.addIndex(R.reduce);
+
+// This works like pipe, but ends when value wrapped into R.reduced() comes
+export const pipeReduce = (...fns) => (...args) => reduceArr(
+  (acc, fn, i) => (i === 0 ? fn(...args) : fn(acc)),
+  null,
+  fns,
+);
 
 export const dateFormatter = new Intl.DateTimeFormat('en-GB', {
   hour: '2-digit',

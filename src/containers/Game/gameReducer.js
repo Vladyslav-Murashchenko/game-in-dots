@@ -4,6 +4,7 @@ import {
   createAction,
   createReducer,
   getRandomArrayItem,
+  pipeReduce,
 } from '../../utils';
 
 const start = createAction('START', (cellsCount, playerName) => ({
@@ -11,7 +12,10 @@ const start = createAction('START', (cellsCount, playerName) => ({
   playerName,
 }));
 const leave = createAction('LEAVE');
-const step = createAction('STEP');
+const step = createAction('STEP', () => ({
+  // generate random here to keep reducer pure function
+  random: Math.random(),
+}));
 const cellClick = createAction('CELL_CLICK', (cell) => ({ cell }));
 
 export const gameActions = {
@@ -38,89 +42,82 @@ const noWinner = (state) => (
   !state.unallocatedCells.length && state.computerCells.length === state.playerCells.length
 );
 
+const endGameWithNoWinner = R.mergeLeft({
+  isPlaying: false,
+  message: 'Nobody won :/',
+});
+
+const checkWinner = (side) => (state) => (
+  state[`${side}Cells`].length > state.cellsCount / 2
+);
+
+const computerWon = checkWinner('computer');
+const playerWon = checkWinner('player');
+
+const caughtSuccess = (cell) => (state) => (
+  state.isPlaying && cell === state.stepCell
+);
+
 const gameReducer = createReducer({
-  [start]: (state, action) => ({
-    ...state,
-    cellsCount: action.cellsCount,
-    playerName: action.playerName,
+  [start]: ({ cellsCount, playerName }) => R.mergeLeft({
+    cellsCount,
+    playerName,
     isPlaying: true,
-    unallocatedCells: R.range(0, action.cellsCount),
+    unallocatedCells: R.range(0, cellsCount),
     message: 'Catch the blue squares!',
   }),
 
-  [cellClick]: (state, action) => {
-    const { cell } = action;
 
-    if (!state.isPlaying || cell !== state.stepCell) {
-      return state;
-    }
+  [cellClick]: ({ cell }) => pipeReduce(
+    R.unless(caughtSuccess(cell), R.reduced),
 
-    const nextState = {
+    R.evolve({
+      playerCaughtCell: R.always(true),
+      playerCells: R.append(cell),
+      unallocatedCells: R.without([cell]),
+    }),
+
+    R.when(playerWon, (state) => R.reduced({
       ...state,
-      playerCaughtCell: true,
-      playerCells: R.append(cell, state.playerCells),
-      unallocatedCells: R.without([cell], state.unallocatedCells),
-    };
+      isPlaying: false,
+      message: `${state.playerName} won!`,
+      winner: state.playerName,
+    })),
 
-    if (nextState.playerCells.length > nextState.cellsCount / 2) {
-      return {
-        ...nextState,
-        isPlaying: false,
-        message: `${state.playerName} won!`,
-        winner: state.playerName,
-      };
-    }
+    R.when(noWinner, R.compose(R.reduced, endGameWithNoWinner)),
+  ),
 
-    if (noWinner(nextState)) {
-      return {
-        ...nextState,
-        isPlaying: false,
-        message: 'Nobody won :/',
-      };
-    }
 
-    return nextState;
-  },
+  [step]: ({ random }) => pipeReduce(
+    R.when(R.prop('playerCaughtCell'), (state) => R.reduced({
+      ...state,
+      playerCaughtCell: false,
+      stepCell: getRandomArrayItem(state.unallocatedCells, random),
+    })),
 
-  [step]: (state) => {
-    if (state.playerCaughtCell) {
-      return {
-        ...state,
-        playerCaughtCell: false,
-        stepCell: getRandomArrayItem(state.unallocatedCells),
-      };
-    }
-
-    const nextState = {
+    (state) => ({
       ...state,
       computerCells: R.append(state.stepCell, state.computerCells),
       unallocatedCells: R.without([state.stepCell], state.unallocatedCells),
-    };
+    }),
 
-    if (nextState.computerCells.length > nextState.cellsCount / 2) {
-      return {
-        ...nextState,
-        isPlaying: false,
-        message: 'Computer won :( Try again!',
-        winner: 'Computer AI',
-      };
-    }
+    R.when(computerWon, (state) => R.reduced(({
+      ...state,
+      isPlaying: false,
+      message: 'Computer won :Try again!',
+      winner: 'Computer AI',
+    }))),
 
-    if (noWinner(nextState)) {
-      return {
-        ...nextState,
-        isPlaying: false,
-        message: 'Nobody won :/',
-      };
-    }
+    R.when(noWinner, R.compose(R.reduced, endGameWithNoWinner)),
 
-    return {
-      ...nextState,
-      stepCell: getRandomArrayItem(nextState.unallocatedCells),
-    };
-  },
+    (state) => ({
+      ...state,
+      stepCell: getRandomArrayItem(state.unallocatedCells, random),
+    }),
+  ),
 
-  [leave]: () => initialGameState,
+
+  [leave]: () => R.always(initialGameState),
 });
 
 export default gameReducer;
