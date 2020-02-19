@@ -1,3 +1,4 @@
+// cause of downshift API
 /* eslint react/jsx-props-no-spreading: 0 */
 import React, {
   useCallback,
@@ -11,6 +12,77 @@ import {
   bool,
 } from 'prop-types';
 import { useSelect } from 'downshift';
+
+const DropdownSelect = ({
+  selected,
+  options,
+  onSelect,
+  placeholder,
+  disabled,
+  className,
+}) => {
+  const handleSelect = useCallback(
+    ({ selectedItem }) => onSelect(selectedItem),
+    [onSelect],
+  );
+
+  const {
+    isOpen,
+    getToggleButtonProps,
+    getMenuProps,
+    highlightedIndex,
+    getItemProps,
+  } = useSelect({
+    items: options,
+    onSelectedItemChange: handleSelect,
+  });
+
+  return (
+    <Wrapper className={className}>
+      <Button
+        {...getToggleButtonProps()}
+        expanded={isOpen}
+        disabled={disabled}
+      >
+        {selected ? selected.label : placeholder}
+      </Button>
+      <Menu {...getMenuProps()}>
+        {isOpen && options.map((option, index) => (
+          <Option
+            key={option.value}
+            highlighted={highlightedIndex === index}
+            {...getItemProps({ item: option, index })}
+          >
+            {option.label}
+          </Option>
+        ))}
+      </Menu>
+    </Wrapper>
+  );
+};
+
+DropdownSelect.defaultProps = {
+  selected: null,
+  options: [],
+  placeholder: '',
+  disabled: false,
+  className: '',
+};
+
+DropdownSelect.propTypes = {
+  selected: shape({
+    value: string,
+    label: string,
+  }),
+  options: arrayOf(shape({
+    value: string,
+    label: string,
+  })),
+  onSelect: func.isRequired,
+  placeholder: string,
+  className: string,
+  disabled: bool,
+};
 
 const Wrapper = styled.div`
   display: flex;
@@ -74,73 +146,5 @@ const Option = styled.li`
     background: #7a8c93;
   `}
 `;
-
-const DropdownSelect = ({
-  selected,
-  options,
-  onSelect,
-  placeholder,
-  disabled,
-}) => {
-  const handleSelect = useCallback(
-    ({ selectedItem }) => onSelect(selectedItem),
-    [onSelect],
-  );
-
-  const {
-    isOpen,
-    getToggleButtonProps,
-    getMenuProps,
-    highlightedIndex,
-    getItemProps,
-  } = useSelect({
-    items: options,
-    onSelectedItemChange: handleSelect,
-  });
-
-  return (
-    <Wrapper>
-      <Button
-        {...getToggleButtonProps()}
-        expanded={isOpen}
-        disabled={disabled}
-      >
-        {selected ? selected.label : placeholder}
-      </Button>
-      <Menu {...getMenuProps()}>
-        {isOpen && options.map((option, index) => (
-          <Option
-            key={option.value}
-            highlighted={highlightedIndex === index}
-            {...getItemProps({ item: option, index })}
-          >
-            {option.label}
-          </Option>
-        ))}
-      </Menu>
-    </Wrapper>
-  );
-};
-
-DropdownSelect.defaultProps = {
-  selected: null,
-  options: [],
-  placeholder: '',
-  disabled: false,
-};
-
-DropdownSelect.propTypes = {
-  selected: shape({
-    value: string,
-    label: string,
-  }),
-  options: arrayOf(shape({
-    value: string,
-    label: string,
-  })),
-  onSelect: func.isRequired,
-  placeholder: string,
-  disabled: bool,
-};
 
 export default DropdownSelect;

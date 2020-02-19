@@ -7,6 +7,48 @@ import {
 } from 'prop-types';
 import * as R from 'ramda';
 
+const GameField = ({
+  lineLength,
+  cellsCount,
+  stepCell,
+  computerCells,
+  playerCells,
+  onCellClick,
+}) => {
+  const renderCells = R.pipe(
+    R.range(0),
+    R.map((cell) => (
+      <Cell
+        key={cell}
+        width={`${100 / lineLength}%`}
+        onClick={() => onCellClick(cell)}
+        isStepCell={stepCell === cell}
+        isComputerCell={computerCells.includes(cell)}
+        isPlayerCell={playerCells.includes(cell)}
+      />
+    )),
+  );
+
+  return (
+    <Field>
+      {renderCells(cellsCount)}
+    </Field>
+  );
+};
+
+GameField.defaultProps = {
+  stepCell: null,
+};
+
+GameField.propTypes = {
+  lineLength: number.isRequired,
+  cellsCount: number.isRequired,
+  stepCell: number,
+  computerCells: arrayOf(number).isRequired,
+  playerCells: arrayOf(number).isRequired,
+  onCellClick: func.isRequired,
+};
+
 const Field = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -41,46 +83,4 @@ const Cell = styled.button`
   `}
 `;
 
-const Game = ({
-  lineLength,
-  cellsCount,
-  stepCell,
-  computerCells,
-  playerCells,
-  onCellClick,
-}) => {
-  const renderCells = R.pipe(
-    R.range(0),
-    R.map((cell) => (
-      <Cell
-        key={cell}
-        width={`${100 / lineLength}%`}
-        onClick={() => onCellClick(cell)}
-        isStepCell={stepCell === cell}
-        isComputerCell={computerCells.includes(cell)}
-        isPlayerCell={playerCells.includes(cell)}
-      />
-    )),
-  );
-
-  return (
-    <Field>
-      {renderCells(cellsCount)}
-    </Field>
-  );
-};
-
-Game.defaultProps = {
-  stepCell: null,
-};
-
-Game.propTypes = {
-  lineLength: number.isRequired,
-  cellsCount: number.isRequired,
-  stepCell: number,
-  computerCells: arrayOf(number).isRequired,
-  playerCells: arrayOf(number).isRequired,
-  onCellClick: func.isRequired,
-};
-
-export default Game;
+export default GameField;

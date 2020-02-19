@@ -4,6 +4,16 @@ import { Link } from 'react-router-dom';
 
 import Button from './Button';
 
+const AppHeader = () => (
+  <Header>
+    <Heading>Game in dots</Heading>
+    <Nav>
+      <ButtonStyled as={Link} to="/game">Game</ButtonStyled>
+      <ButtonStyled as={Link} to="/leader-board">Leader Board</ButtonStyled>
+    </Nav>
+  </Header>
+);
+
 const Header = styled.header`
   display: flex;
   flex-wrap: wrap;
@@ -41,15 +51,5 @@ const ButtonStyled = styled(Button).attrs({
 })`
   margin: 10px;
 `;
-
-const AppHeader = () => (
-  <Header>
-    <Heading>Game in dots</Heading>
-    <Nav>
-      <ButtonStyled as={Link} to="/game">Game</ButtonStyled>
-      <ButtonStyled as={Link} to="/leader-board">Leader Board</ButtonStyled>
-    </Nav>
-  </Header>
-);
 
 export default AppHeader;

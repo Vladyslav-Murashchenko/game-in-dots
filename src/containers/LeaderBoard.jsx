@@ -12,6 +12,42 @@ import {
   Loader,
 } from '../components';
 
+const LeaderBoard = () => {
+  const [winners, setWinners] = useState(null);
+
+  useEffect(() => {
+    api.fetchWinners()
+      .then(setWinners);
+  }, []);
+
+  if (!winners) {
+    return (
+      <Loader />
+    );
+  }
+
+  const renderWinners = R.pipe(
+    R.reverse,
+    R.map(({ winner, date, id }) => (
+      <Winner key={id}>
+        <Name>{winner}</Name>
+        <WinDate>{date}</WinDate>
+      </Winner>
+    )),
+  );
+
+  return (
+    <Main>
+      <Wrapper>
+        <Heading>Leader Board</Heading>
+        <Winners>
+          {renderWinners(winners)}
+        </Winners>
+      </Wrapper>
+    </Main>
+  );
+};
+
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -56,45 +92,9 @@ const Name = styled.div`
   font-size: 1.6rem;
 `;
 
-const Date = styled.div`
+const WinDate = styled.div`
   color: #707577;
   font-size: 1.6rem;
 `;
-
-const LeaderBoard = () => {
-  const [winners, setWinners] = useState(null);
-
-  useEffect(() => {
-    api.fetchWinners()
-      .then(setWinners);
-  }, []);
-
-  if (!winners) {
-    return (
-      <Loader />
-    );
-  }
-
-  const renderWinners = R.pipe(
-    R.reverse,
-    R.map(({ winner, date, id }) => (
-      <Winner key={id}>
-        <Name>{winner}</Name>
-        <Date>{date}</Date>
-      </Winner>
-    )),
-  );
-
-  return (
-    <Main>
-      <Wrapper>
-        <Heading>Leader Board</Heading>
-        <Winners>
-          {renderWinners(winners)}
-        </Winners>
-      </Wrapper>
-    </Main>
-  );
-};
 
 export default LeaderBoard;
