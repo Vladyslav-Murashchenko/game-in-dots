@@ -4,7 +4,8 @@ import {
   createAction,
   createReducer,
   getRandomArrayItem,
-  pipeReduce,
+  pipeWithStop,
+  stopPipe,
 } from '../../utils';
 
 const start = createAction('START', (cellsCount, playerName) => ({
@@ -68,8 +69,8 @@ const gameReducer = createReducer({
   }),
 
 
-  [cellClick]: ({ cell }) => pipeReduce(
-    R.unless(caughtSuccess(cell), R.reduced),
+  [cellClick]: ({ cell }) => pipeWithStop([
+    R.unless(caughtSuccess(cell), stopPipe),
 
     R.evolve({
       playerCaughtCell: R.always(true),
@@ -77,19 +78,19 @@ const gameReducer = createReducer({
       unallocatedCells: R.without([cell]),
     }),
 
-    R.when(playerWon, (state) => R.reduced({
+    R.when(playerWon, (state) => stopPipe({
       ...state,
       isPlaying: false,
       message: `${state.playerName} won!`,
       winner: state.playerName,
     })),
 
-    R.when(noWinner, R.compose(R.reduced, endGameWithNoWinner)),
-  ),
+    R.when(noWinner, endGameWithNoWinner),
+  ]),
 
 
-  [step]: ({ random }) => pipeReduce(
-    R.when(R.prop('playerCaughtCell'), (state) => R.reduced({
+  [step]: ({ random }) => pipeWithStop([
+    R.when(R.prop('playerCaughtCell'), (state) => stopPipe({
       ...state,
       playerCaughtCell: false,
       stepCell: getRandomArrayItem(state.unallocatedCells, random),
@@ -101,20 +102,20 @@ const gameReducer = createReducer({
       unallocatedCells: R.without([state.stepCell], state.unallocatedCells),
     }),
 
-    R.when(computerWon, (state) => R.reduced(({
+    R.when(computerWon, (state) => stopPipe(({
       ...state,
       isPlaying: false,
       message: 'Computer won :Try again!',
       winner: 'Computer AI',
     }))),
 
-    R.when(noWinner, R.compose(R.reduced, endGameWithNoWinner)),
+    R.when(noWinner, R.compose(stopPipe, endGameWithNoWinner)),
 
     (state) => ({
       ...state,
       stepCell: getRandomArrayItem(state.unallocatedCells, random),
     }),
-  ),
+  ]),
 
 
   [leave]: () => R.always(initialGameState),

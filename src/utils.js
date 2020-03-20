@@ -47,14 +47,21 @@ export const getRandomArrayItem = (arr, random = 0.5) => {
   return arr[Math.floor(random * arr.length)];
 };
 
-const reduceArr = R.addIndex(R.reduce);
+const stopPipeSymbol = Symbol('break pipe');
 
-// This works like pipe, but ends when value wrapped into R.reduced() comes
-export const pipeReduce = (...fns) => (...args) => reduceArr(
-  (acc, fn, i) => (i === 0 ? fn(...args) : fn(acc)),
-  null,
-  fns,
+const pipeStopped = (value) => (
+  value && value[stopPipeSymbol]
 );
+
+export const stopPipe = R.unless(
+  pipeStopped,
+  (value) => ({
+    value,
+    [stopPipeSymbol]: true,
+  }),
+);
+
+export const pipeWithStop = R.pipeWith((f, res) => (pipeStopped(res) ? res.value : f(res)));
 
 export const dateFormatter = new Intl.DateTimeFormat('en-GB', {
   hour: '2-digit',
