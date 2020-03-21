@@ -8,7 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "./node_modules/.bin/eslint src/**/*.{js,jsx}",
     "start": "parcel public/index.html",
-    "build": "parcel build public/index.html"
+    "build": "parcel build public/index.html",
+    "deploy": "npm run build && surge --project ./dist --domain game-in-dots.surge.sh"
   },
   "repository": {
     "type": "git",
