@@ -56,7 +56,7 @@ const computerWon = checkWinner('computer');
 const playerWon = checkWinner('player');
 
 const caughtSuccess = (cell) => (state) => (
-  state.isPlaying && cell === state.stepCell
+  state.isPlaying && !state.playerCaughtCell && cell === state.stepCell
 );
 
 const gameReducer = createReducer({
