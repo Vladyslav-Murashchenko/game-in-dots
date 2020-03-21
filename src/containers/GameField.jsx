@@ -21,7 +21,8 @@ const GameField = ({
       <Cell
         key={cell}
         width={`${100 / lineLength}%`}
-        onClick={() => onCellClick(cell)}
+        onMouseDown={() => onCellClick(cell)}
+        onTouchStart={() => onCellClick(cell)}
         isStepCell={stepCell === cell}
         isComputerCell={computerCells.includes(cell)}
         isPlayerCell={playerCells.includes(cell)}
