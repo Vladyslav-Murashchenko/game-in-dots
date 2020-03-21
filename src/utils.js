@@ -30,16 +30,18 @@ const reducerLens = R.lensIndex(1);
  * to checkAction, handleAction pairts
  * add default case
  * wrap to ramda condition helper
+ * add default state
  * */
-export const createReducer = R.pipe(
+export const createReducer = (defaultState, actionReducerMap) => R.pipe(
   R.toPairs,
   R.map(R.over(actionTypeLens, toCheckAction)),
   R.map(R.over(reducerLens, toHandleAction)),
   R.append([R.T, R.identity]), // default case
   R.cond,
-);
+  (reducer) => (state = defaultState, action) => reducer(state, action),
+)(actionReducerMap);
 
-export const getRandomArrayItem = (arr, random = 0.5) => {
+export const getRandomArrayItem = (arr, random = Math.random()) => {
   if (!arr.length) {
     throw new Error('Cannot get random item from empty array');
   }
@@ -47,7 +49,7 @@ export const getRandomArrayItem = (arr, random = 0.5) => {
   return arr[Math.floor(random * arr.length)];
 };
 
-const stopPipeSymbol = Symbol('break pipe');
+const stopPipeSymbol = Symbol('Stop pipe');
 
 const pipeStopped = (value) => (
   value && value[stopPipeSymbol]

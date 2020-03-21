@@ -2,9 +2,9 @@ import React, {
   useState,
   useMemo,
   useEffect,
-  useReducer,
   useRef,
 } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import * as R from 'ramda';
 import { titleCase } from 'change-case';
@@ -14,10 +14,8 @@ import {
   dateFormatter,
   preventDefault,
 } from '../../utils';
-import gameReducer, {
-  initialGameState,
-  gameActions,
-} from './gameReducer';
+
+import { gameSelector, gameActions } from '../../redux/ducks/game';
 
 import GameField from '../GameField';
 
@@ -30,13 +28,13 @@ import {
 } from '../../components';
 
 const Game = () => {
+  const dispatch = useDispatch();
+  const gameState = useSelector(gameSelector);
   const [settings, setSettings] = useState(null);
   const [selectedMode, setSelectedMode] = useState(null);
 
   const [playerName, setPlayerName] = useState('');
   const [playerNameError, setPlayerNameError] = useState('');
-
-  const [gameState, gameDispatch] = useReducer(gameReducer, initialGameState);
 
   const timerRef = useRef(null);
 
@@ -89,7 +87,7 @@ const Game = () => {
 
     timerRef.current = setTimeout(R.pipe(
       gameActions.step,
-      gameDispatch,
+      dispatch,
     ), delay);
 
     return () => clearTimeout(timerRef.current);
@@ -112,16 +110,16 @@ const Game = () => {
       return;
     }
 
-    gameDispatch(gameActions.start(cellsCount, playerName));
+    dispatch(gameActions.start(cellsCount, playerName));
   };
 
   const handleLeaveGame = () => {
-    gameDispatch(gameActions.leave());
+    dispatch(gameActions.leave());
     clearTimeout(timerRef.current);
   };
 
   const handleCellClick = (cell) => {
-    gameDispatch(gameActions.cellClick(cell));
+    dispatch(gameActions.cellClick(cell));
   };
 
   if (!selectedMode) {
