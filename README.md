@@ -1,2 +1,3 @@
 # game-in-dots
-starnavi front-end test task
+StarNavi front-end test task
+Deployed game is [here](http://game-in-dots.surge.sh/)
