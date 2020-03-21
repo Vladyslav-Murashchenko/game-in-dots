@@ -73,6 +73,7 @@ const Winners = styled.ul`
 
 const Winner = styled.li`
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
 
   padding: 1.5vw 3vw;
@@ -80,8 +81,8 @@ const Winner = styled.li`
 
   margin: 10px 0;
 
-  @media (max-width: 800px) {
-    flex-direction: column;
+  @media (min-width: 800px) {
+    flex-direction: row;
   }
 `;
 

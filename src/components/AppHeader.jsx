@@ -23,7 +23,7 @@ const Header = styled.header`
   background: #f1f1f1;
   box-shadow: 0px 0px 10px #333333;
 
-  @media (min-width: 800px) {
+  @media (min-width: 620px) {
     justify-content: space-between;
   }
 `;
@@ -32,17 +32,15 @@ const Heading = styled.h1`
   text-transform: uppercase;
   font-size: 2.5rem;
   color: #707577;
-
-  @media (max-width: 800px) {
-    margin-left: auto;
-    margin-right: auto;
-  }
+  margin: 0;
 `;
 
 const Nav = styled.nav`
   display: flex;
-  @media (max-width: 800px) {
-    width: 275px;
+  width: 275px;
+
+  @media (min-width: 800px) {
+    width: auto;
   }
 `;
 

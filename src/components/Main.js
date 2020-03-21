@@ -5,7 +5,7 @@ const Main = styled.main`
   flex-direction: column;
   align-items: center;
   flex: 1;
-  padding: 3vw;
+  padding: 3%;
 
   @media (max-width: 800px) {
     padding-top: 2rem;

@@ -52,13 +52,12 @@ GameField.propTypes = {
 const Field = styled.div`
   display: flex;
   flex-wrap: wrap;
-  width: 70vw;
-  max-width: 70vh;
+  width: 100%;
   border: 1px solid #888;
 
-  @media (max-width: 800px) {
-    width: 100%;
-    max-width: 90vh;
+  @media (min-width: 800px) {
+    width: 70vw;
+    max-width: 70vh;
   }
 `;
 

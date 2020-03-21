@@ -86,14 +86,14 @@ DropdownSelect.propTypes = {
 
 const Wrapper = styled.div`
   display: flex;
-  flex-direction: column;
   position: relative;
 `;
 
 const Button = styled.button.attrs({
   type: 'button',
 })`
-  position: relative;
+  width: 100%;
+  height: 100%;
   padding: 15px 30px 15px 25px;
   min-width: 220px;
   border: 0;

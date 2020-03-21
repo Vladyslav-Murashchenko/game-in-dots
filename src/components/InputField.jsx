@@ -49,7 +49,7 @@ const Wrapper = styled.div`
 `;
 
 const Input = styled.input`
-  padding: 15px 25px;
+  padding: 13px 25px;
   border: 2px solid ${({ hasError }) => (hasError ? '#993333' : '#cfd8dc')};
   background-color: #f3f3f3;
   font-size: 1.2rem;

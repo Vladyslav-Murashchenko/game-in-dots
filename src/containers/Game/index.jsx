@@ -92,7 +92,6 @@ const Game = () => {
       gameDispatch,
     ), delay);
 
-    // eslint-disable-next-line consistent-return
     return () => clearTimeout(timerRef.current);
   }, [stepCell, isPlaying]);
 
@@ -132,7 +131,7 @@ const Game = () => {
   return (
     <Main>
       <Form onSubmit={preventDefault}>
-        <DropdownSelect
+        <DropdownSelectStyled
           selected={selectedMode}
           onSelect={R.pipe(setSelectedMode, handleLeaveGame)}
           options={modeOptions}
@@ -178,6 +177,14 @@ const Game = () => {
   );
 };
 
+const DropdownSelectStyled = styled(DropdownSelect)`
+  margin-bottom: 1.5rem;
+
+  @media (min-width: 800px) {
+    margin: 0;
+  }
+`;
+
 const InputFieldStyled = styled(InputField)`
   margin-bottom: 1.5rem;
 
@@ -189,17 +196,12 @@ const InputFieldStyled = styled(InputField)`
 const Form = styled.form`
   display: flex;
   flex-direction: column;
-
-  @media (max-width: 800px) {
-    width: 100%;
-
-    > *:not(:last-child) {
-      margin-bottom: 1.5rem;
-    }
-  }
+  width: 100%;
   
   @media (min-width: 800px) {
     flex-direction: row;
+    align-items: center;
+    justify-content: center;
   }
 `;
 
