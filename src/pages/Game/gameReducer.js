@@ -39,7 +39,7 @@ export const initialGameState = {
   playerCells: [],
   computerCells: [],
   unallocatedCells: [],
-  stepCell: null,
+  currentStepCell: null,
   cellsCount: null,
   message: 'Press play to start! And catch the blue squares!',
   winner: null,
@@ -63,7 +63,7 @@ const playerWon = checkWinner('player');
 const caughtSuccess = (cell) => (state) =>
   state.status === GAME_STATUS.playing &&
   !state.playerCaughtCell &&
-  cell === state.stepCell;
+  cell === state.currentStepCell;
 
 const gameReducer = createReducer({
   [start]: ({ cellsCount, playerName }) =>
@@ -103,14 +103,17 @@ const gameReducer = createReducer({
         stopPipe({
           ...state,
           playerCaughtCell: false,
-          stepCell: getRandomArrayItem(state.unallocatedCells, random),
+          currentStepCell: getRandomArrayItem(state.unallocatedCells, random),
         }),
       ),
 
       (state) => ({
         ...state,
-        computerCells: R.append(state.stepCell, state.computerCells),
-        unallocatedCells: R.without([state.stepCell], state.unallocatedCells),
+        computerCells: R.append(state.currentStepCell, state.computerCells),
+        unallocatedCells: R.without(
+          [state.currentStepCell],
+          state.unallocatedCells,
+        ),
       }),
 
       R.when(computerWon, (state) =>
@@ -126,7 +129,7 @@ const gameReducer = createReducer({
 
       (state) => ({
         ...state,
-        stepCell: getRandomArrayItem(state.unallocatedCells, random),
+        currentStepCell: getRandomArrayItem(state.unallocatedCells, random),
       }),
     ]),
 

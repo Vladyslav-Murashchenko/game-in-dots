@@ -6,7 +6,7 @@ import * as R from 'ramda';
 const GameField = ({
   lineLength,
   cellsCount,
-  stepCell,
+  currentStepCell,
   computerCells,
   playerCells,
   onCellClick,
@@ -19,7 +19,7 @@ const GameField = ({
         width={`${100 / lineLength}%`}
         onMouseDown={() => onCellClick(cell)}
         onTouchStart={() => onCellClick(cell)}
-        isStepCell={stepCell === cell}
+        isCurrentStepCell={currentStepCell === cell}
         isComputerCell={computerCells.includes(cell)}
         isPlayerCell={playerCells.includes(cell)}
       />
@@ -30,13 +30,13 @@ const GameField = ({
 };
 
 GameField.defaultProps = {
-  stepCell: null,
+  currentStepCell: null,
 };
 
 GameField.propTypes = {
   lineLength: number.isRequired,
   cellsCount: number.isRequired,
-  stepCell: number,
+  currentStepCell: number,
   computerCells: arrayOf(number).isRequired,
   playerCells: arrayOf(number).isRequired,
   onCellClick: func.isRequired,
@@ -64,8 +64,8 @@ const Cell = styled.button`
   background: #fff;
   cursor: crosshair;
 
-  ${({ isStepCell }) =>
-    isStepCell &&
+  ${({ isCurrentStepCell }) =>
+    isCurrentStepCell &&
     css`
       background: #0fc9de;
     `}

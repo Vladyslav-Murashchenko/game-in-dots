@@ -33,7 +33,7 @@ const Game = () => {
   const {
     playerCells,
     computerCells,
-    stepCell,
+    currentStepCell,
     status,
     message,
     winner,
@@ -151,7 +151,7 @@ const Game = () => {
       <GameField
         lineLength={lineLength}
         cellsCount={cellsCount}
-        stepCell={stepCell}
+        currentStepCell={currentStepCell}
         onCellClick={handleCellClick}
         playerCells={playerCells}
         computerCells={computerCells}
