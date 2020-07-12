@@ -17,29 +17,15 @@ export const createAction = (
   });
 };
 
-const toCheckAction = (caseActionType) => (_, action) =>
-  R.equals(caseActionType, action.type);
+export const createReducer = (caseReducerMap) => (state, action) => {
+  const caseReducer = caseReducerMap[action.type];
 
-const toHandleAction = (reducer) => (state, action) => reducer(action)(state);
+  if (caseReducer) {
+    return caseReducer(action)(state);
+  }
 
-const actionTypeLens = R.lensIndex(0);
-const reducerLens = R.lensIndex(1);
-
-/**
- * convert object like:
- * key - actionType = string
- * value - case reducer = action => state => transformation
- * to checkAction, handleAction pairts
- * add default case
- * wrap to ramda condition helper
- * */
-export const createReducer = R.pipe(
-  R.toPairs,
-  R.map(R.over(actionTypeLens, toCheckAction)),
-  R.map(R.over(reducerLens, toHandleAction)),
-  R.append([R.T, R.identity]), // default case
-  R.cond,
-);
+  return state;
+};
 
 export const getRandomArrayItem = (arr, random = 0.5) => {
   if (!arr.length) {
