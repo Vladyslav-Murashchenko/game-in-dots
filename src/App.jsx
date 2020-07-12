@@ -8,10 +8,10 @@ import {
   Redirect,
 } from 'react-router-dom';
 
-import Game from './Game';
-import LeaderBoard from './LeaderBoard';
+import Game from './pages/Game';
+import LeaderBoard from './pages/LeaderBoard';
 
-import { AppHeader } from '../components';
+import { AppHeader } from './components';
 
 const App = () => (
   <Router>

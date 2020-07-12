@@ -5,9 +5,13 @@ import { titleCase } from 'change-case';
 
 import * as api from '../../api';
 import { dateFormatter, preventDefault } from '../../utils';
-import gameReducer, { initialGameState, gameActions } from './gameReducer';
+import gameReducer, {
+  initialGameState,
+  gameActions,
+  GAME_STATUS,
+} from './gameReducer';
 
-import GameField from '../GameField';
+import GameField from './GameField';
 
 import {
   Main,
@@ -30,7 +34,7 @@ const Game = () => {
     playerCells,
     computerCells,
     stepCell,
-    isPlaying,
+    status,
     message,
     winner,
   } = gameState;
@@ -66,7 +70,7 @@ const Game = () => {
   }, [modeOptions]);
 
   useEffect(() => {
-    if (!isPlaying) {
+    if (status !== GAME_STATUS.playing) {
       return;
     }
 
@@ -77,7 +81,7 @@ const Game = () => {
     }, delay);
 
     return () => clearInterval(timerId);
-  }, [isPlaying]);
+  }, [status]);
 
   const lineLength = selectedMode && settings[selectedMode.value].field;
   const cellsCount = lineLength && lineLength ** 2;
@@ -103,6 +107,11 @@ const Game = () => {
     gameDispatch(gameActions.leave());
   };
 
+  const handleRestartGame = () => {
+    handleLeaveGame();
+    handleStartGame();
+  };
+
   const handleCellClick = (cell) => {
     gameDispatch(gameActions.cellClick(cell));
   };
@@ -114,30 +123,29 @@ const Game = () => {
   return (
     <Main>
       <Form onSubmit={preventDefault}>
-        <DropdownSelectStyled
+        <ModeSelect
           selected={selectedMode}
-          onSelect={R.pipe(setSelectedMode, handleLeaveGame)}
+          onSelect={setSelectedMode}
           options={modeOptions}
-          disabled={isPlaying}
+          disabled={status !== GAME_STATUS.preparing}
           placeholder="Pick game mode"
         />
-        <InputFieldStyled
+        <NameInput
           value={playerName}
           onChange={handleNameChange}
-          disabled={isPlaying}
+          disabled={status !== GAME_STATUS.preparing}
           placeholder="Enter your name"
           error={playerNameError}
         />
-        {!isPlaying && stepCell == null && (
+        {status === GAME_STATUS.preparing && (
           <Button text="Play" onClick={handleStartGame} />
         )}
-        {!isPlaying && stepCell != null && (
-          <Button
-            text="Play Again"
-            onClick={R.pipe(handleLeaveGame, handleStartGame)}
-          />
+        {status === GAME_STATUS.finished && (
+          <Button text="Play Again" onClick={handleRestartGame} />
         )}
-        {isPlaying && <Button text="Leave" onClick={handleLeaveGame} />}
+        {status === GAME_STATUS.playing && (
+          <Button text="Leave" onClick={handleLeaveGame} />
+        )}
       </Form>
       <Message>{message}</Message>
       <GameField
@@ -152,7 +160,7 @@ const Game = () => {
   );
 };
 
-const DropdownSelectStyled = styled(DropdownSelect)`
+const ModeSelect = styled(DropdownSelect)`
   margin-bottom: 1.5rem;
 
   @media (min-width: 800px) {
@@ -160,7 +168,7 @@ const DropdownSelectStyled = styled(DropdownSelect)`
   }
 `;
 
-const InputFieldStyled = styled(InputField)`
+const NameInput = styled(InputField)`
   margin-bottom: 1.5rem;
 
   @media (min-width: 800px) {

@@ -26,7 +26,14 @@ export const gameActions = {
   cellClick,
 };
 
+export const GAME_STATUS = {
+  preparing: 'preparing',
+  playing: 'playing',
+  finished: 'finished',
+};
+
 export const initialGameState = {
+  status: GAME_STATUS.preparing,
   playerName: null,
   playerCaughtCell: false,
   playerCells: [],
@@ -34,7 +41,6 @@ export const initialGameState = {
   unallocatedCells: [],
   stepCell: null,
   cellsCount: null,
-  isPlaying: false,
   message: 'Press play to start! And catch the blue squares!',
   winner: null,
 };
@@ -44,7 +50,7 @@ const noWinner = (state) =>
   state.computerCells.length === state.playerCells.length;
 
 const endGameWithNoWinner = R.mergeLeft({
-  isPlaying: false,
+  status: GAME_STATUS.finished,
   message: 'Nobody won :/',
 });
 
@@ -55,14 +61,16 @@ const computerWon = checkWinner('computer');
 const playerWon = checkWinner('player');
 
 const caughtSuccess = (cell) => (state) =>
-  state.isPlaying && !state.playerCaughtCell && cell === state.stepCell;
+  state.status === GAME_STATUS.playing &&
+  !state.playerCaughtCell &&
+  cell === state.stepCell;
 
 const gameReducer = createReducer({
   [start]: ({ cellsCount, playerName }) =>
     R.mergeLeft({
       cellsCount,
       playerName,
-      isPlaying: true,
+      status: GAME_STATUS.playing,
       unallocatedCells: R.range(0, cellsCount),
       message: 'Catch the blue squares!',
     }),
@@ -80,7 +88,7 @@ const gameReducer = createReducer({
       R.when(playerWon, (state) =>
         stopPipe({
           ...state,
-          isPlaying: false,
+          status: GAME_STATUS.finished,
           message: `${state.playerName} won!`,
           winner: state.playerName,
         }),
@@ -108,7 +116,7 @@ const gameReducer = createReducer({
       R.when(computerWon, (state) =>
         stopPipe({
           ...state,
-          isPlaying: false,
+          status: GAME_STATUS.finished,
           message: 'Computer won :Try again!',
           winner: 'Computer AI',
         }),
