@@ -2,7 +2,10 @@ import * as R from 'ramda';
 
 const defaultActionCreator = (payload = null) => ({ payload });
 
-export const createAction = (type, typelessActionCreator = defaultActionCreator) => {
+export const createAction = (
+  type,
+  typelessActionCreator = defaultActionCreator,
+) => {
   const actionCreator = (...args) => ({
     ...typelessActionCreator(...args),
     type,
@@ -14,9 +17,8 @@ export const createAction = (type, typelessActionCreator = defaultActionCreator)
   });
 };
 
-const toCheckAction = (caseActionType) => (_, action) => (
-  R.equals(caseActionType, action.type)
-);
+const toCheckAction = (caseActionType) => (_, action) =>
+  R.equals(caseActionType, action.type);
 
 const toHandleAction = (reducer) => (state, action) => reducer(action)(state);
 
@@ -49,19 +51,16 @@ export const getRandomArrayItem = (arr, random = 0.5) => {
 
 const stopPipeSymbol = Symbol('break pipe');
 
-const pipeStopped = (value) => (
-  value && value[stopPipeSymbol]
-);
+const pipeStopped = (value) => value && value[stopPipeSymbol];
 
-export const stopPipe = R.unless(
-  pipeStopped,
-  (value) => ({
-    value,
-    [stopPipeSymbol]: true,
-  }),
-);
+export const stopPipe = R.unless(pipeStopped, (value) => ({
+  value,
+  [stopPipeSymbol]: true,
+}));
 
-export const pipeWithStop = R.pipeWith((f, res) => (pipeStopped(res) ? res.value : f(res)));
+export const pipeWithStop = R.pipeWith((f, res) =>
+  pipeStopped(res) ? res.value : f(res),
+);
 
 export const dateFormatter = new Intl.DateTimeFormat('en-GB', {
   hour: '2-digit',

@@ -1,29 +1,20 @@
-import React, {
-  useState,
-  useEffect,
-} from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import * as R from 'ramda';
 
 import * as api from '../api';
 
-import {
-  Main,
-  Loader,
-} from '../components';
+import { Main, Loader } from '../components';
 
 const LeaderBoard = () => {
   const [winners, setWinners] = useState(null);
 
   useEffect(() => {
-    api.fetchWinners()
-      .then(setWinners);
+    api.fetchWinners().then(setWinners);
   }, []);
 
   if (!winners) {
-    return (
-      <Loader />
-    );
+    return <Loader />;
   }
 
   const renderWinners = R.pipe(
@@ -40,9 +31,7 @@ const LeaderBoard = () => {
     <Main>
       <Wrapper>
         <Heading>Leader Board</Heading>
-        <Winners>
-          {renderWinners(winners)}
-        </Winners>
+        <Winners>{renderWinners(winners)}</Winners>
       </Wrapper>
     </Main>
   );

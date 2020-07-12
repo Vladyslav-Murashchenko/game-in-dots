@@ -1,10 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import {
-  string,
-  func,
-  bool,
-} from 'prop-types';
+import { string, func, bool } from 'prop-types';
 
 const InputField = ({
   value,
@@ -17,7 +13,7 @@ const InputField = ({
   <Wrapper className={className}>
     <Input
       value={value}
-      onChange={onChange}
+      onChange={(e) => onChange(e.target.value)}
       disabled={disabled}
       placeholder={placeholder}
       hasError={error}

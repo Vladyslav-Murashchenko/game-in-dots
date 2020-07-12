@@ -1,10 +1,6 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import {
-  number,
-  arrayOf,
-  func,
-} from 'prop-types';
+import { number, arrayOf, func } from 'prop-types';
 import * as R from 'ramda';
 
 const GameField = ({
@@ -30,11 +26,7 @@ const GameField = ({
     )),
   );
 
-  return (
-    <Field>
-      {renderCells(cellsCount)}
-    </Field>
-  );
+  return <Field>{renderCells(cellsCount)}</Field>;
 };
 
 GameField.defaultProps = {
@@ -72,15 +64,21 @@ const Cell = styled.button`
   background: #fff;
   cursor: crosshair;
 
-  ${({ isStepCell }) => isStepCell && css`
-    background: #0fc9de;
-  `}
-  ${({ isComputerCell }) => isComputerCell && css`
-    background: #993333;
-  `}
-  ${({ isPlayerCell }) => isPlayerCell && css`
-    background: #339933;
-  `}
+  ${({ isStepCell }) =>
+    isStepCell &&
+    css`
+      background: #0fc9de;
+    `}
+  ${({ isComputerCell }) =>
+    isComputerCell &&
+    css`
+      background: #993333;
+    `}
+  ${({ isPlayerCell }) =>
+    isPlayerCell &&
+    css`
+      background: #339933;
+    `}
 `;
 
 export default GameField;

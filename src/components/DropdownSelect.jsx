@@ -1,16 +1,8 @@
 // cause of downshift API
 /* eslint react/jsx-props-no-spreading: 0 */
-import React, {
-  useCallback,
-} from 'react';
+import React, { useCallback } from 'react';
 import styled, { css } from 'styled-components';
-import {
-  shape,
-  arrayOf,
-  string,
-  func,
-  bool,
-} from 'prop-types';
+import { shape, arrayOf, string, func, bool } from 'prop-types';
 import { useSelect } from 'downshift';
 
 const DropdownSelect = ({
@@ -39,23 +31,20 @@ const DropdownSelect = ({
 
   return (
     <Wrapper className={className}>
-      <Button
-        {...getToggleButtonProps()}
-        expanded={isOpen}
-        disabled={disabled}
-      >
+      <Button {...getToggleButtonProps()} expanded={isOpen} disabled={disabled}>
         {selected ? selected.label : placeholder}
       </Button>
       <Menu {...getMenuProps()}>
-        {isOpen && options.map((option, index) => (
-          <Option
-            key={option.value}
-            highlighted={highlightedIndex === index}
-            {...getItemProps({ item: option, index })}
-          >
-            {option.label}
-          </Option>
-        ))}
+        {isOpen &&
+          options.map((option, index) => (
+            <Option
+              key={option.value}
+              highlighted={highlightedIndex === index}
+              {...getItemProps({ item: option, index })}
+            >
+              {option.label}
+            </Option>
+          ))}
       </Menu>
     </Wrapper>
   );
@@ -74,10 +63,12 @@ DropdownSelect.propTypes = {
     value: string,
     label: string,
   }),
-  options: arrayOf(shape({
-    value: string,
-    label: string,
-  })),
+  options: arrayOf(
+    shape({
+      value: string,
+      label: string,
+    }),
+  ),
   onSelect: func.isRequired,
   placeholder: string,
   className: string,
@@ -114,10 +105,9 @@ const Button = styled.button.attrs({
     border-bottom: 3px solid #83969b;
     border-right: 3px solid #83969b;
     transition: 0.1s;
-    transform: 
-      ${({ expanded }) => (expanded ? 'translateY(8px)' : 'translateY(2px)')}
-      rotate(45deg) 
-      ${({ expanded }) => expanded && 'rotate(180deg)'};
+    transform: ${({ expanded }) =>
+        expanded ? 'translateY(8px)' : 'translateY(2px)'}
+      rotate(45deg) ${({ expanded }) => expanded && 'rotate(180deg)'};
   }
 `;
 
@@ -130,7 +120,7 @@ const Menu = styled.ul`
   padding: 0;
   margin: 0;
   border-top: 0;
-  
+
   list-style: none;
   overflow-y: auto;
   background: #fff;
@@ -141,10 +131,12 @@ const Option = styled.li`
   padding: 10px;
   cursor: pointer;
 
-  ${(props) => props.highlighted && css`
-    color: #fff;
-    background: #7a8c93;
-  `}
+  ${(props) =>
+    props.highlighted &&
+    css`
+      color: #fff;
+      background: #7a8c93;
+    `}
 `;
 
 export default DropdownSelect;

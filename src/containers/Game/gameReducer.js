@@ -39,84 +39,88 @@ export const initialGameState = {
   winner: null,
 };
 
-const noWinner = (state) => (
-  !state.unallocatedCells.length && state.computerCells.length === state.playerCells.length
-);
+const noWinner = (state) =>
+  !state.unallocatedCells.length &&
+  state.computerCells.length === state.playerCells.length;
 
 const endGameWithNoWinner = R.mergeLeft({
   isPlaying: false,
   message: 'Nobody won :/',
 });
 
-const checkWinner = (side) => (state) => (
-  state[`${side}Cells`].length > state.cellsCount / 2
-);
+const checkWinner = (side) => (state) =>
+  state[`${side}Cells`].length > state.cellsCount / 2;
 
 const computerWon = checkWinner('computer');
 const playerWon = checkWinner('player');
 
-const caughtSuccess = (cell) => (state) => (
-  state.isPlaying && !state.playerCaughtCell && cell === state.stepCell
-);
+const caughtSuccess = (cell) => (state) =>
+  state.isPlaying && !state.playerCaughtCell && cell === state.stepCell;
 
 const gameReducer = createReducer({
-  [start]: ({ cellsCount, playerName }) => R.mergeLeft({
-    cellsCount,
-    playerName,
-    isPlaying: true,
-    unallocatedCells: R.range(0, cellsCount),
-    message: 'Catch the blue squares!',
-  }),
-
-
-  [cellClick]: ({ cell }) => pipeWithStop([
-    R.unless(caughtSuccess(cell), stopPipe),
-
-    R.evolve({
-      playerCaughtCell: R.always(true),
-      playerCells: R.append(cell),
-      unallocatedCells: R.without([cell]),
+  [start]: ({ cellsCount, playerName }) =>
+    R.mergeLeft({
+      cellsCount,
+      playerName,
+      isPlaying: true,
+      unallocatedCells: R.range(0, cellsCount),
+      message: 'Catch the blue squares!',
     }),
 
-    R.when(playerWon, (state) => stopPipe({
-      ...state,
-      isPlaying: false,
-      message: `${state.playerName} won!`,
-      winner: state.playerName,
-    })),
+  [cellClick]: ({ cell }) =>
+    pipeWithStop([
+      R.unless(caughtSuccess(cell), stopPipe),
 
-    R.when(noWinner, endGameWithNoWinner),
-  ]),
+      R.evolve({
+        playerCaughtCell: R.always(true),
+        playerCells: R.append(cell),
+        unallocatedCells: R.without([cell]),
+      }),
 
+      R.when(playerWon, (state) =>
+        stopPipe({
+          ...state,
+          isPlaying: false,
+          message: `${state.playerName} won!`,
+          winner: state.playerName,
+        }),
+      ),
 
-  [step]: ({ random }) => pipeWithStop([
-    R.when(R.prop('playerCaughtCell'), (state) => stopPipe({
-      ...state,
-      playerCaughtCell: false,
-      stepCell: getRandomArrayItem(state.unallocatedCells, random),
-    })),
+      R.when(noWinner, endGameWithNoWinner),
+    ]),
 
-    (state) => ({
-      ...state,
-      computerCells: R.append(state.stepCell, state.computerCells),
-      unallocatedCells: R.without([state.stepCell], state.unallocatedCells),
-    }),
+  [step]: ({ random }) =>
+    pipeWithStop([
+      R.when(R.prop('playerCaughtCell'), (state) =>
+        stopPipe({
+          ...state,
+          playerCaughtCell: false,
+          stepCell: getRandomArrayItem(state.unallocatedCells, random),
+        }),
+      ),
 
-    R.when(computerWon, (state) => stopPipe(({
-      ...state,
-      isPlaying: false,
-      message: 'Computer won :Try again!',
-      winner: 'Computer AI',
-    }))),
+      (state) => ({
+        ...state,
+        computerCells: R.append(state.stepCell, state.computerCells),
+        unallocatedCells: R.without([state.stepCell], state.unallocatedCells),
+      }),
 
-    R.when(noWinner, R.compose(stopPipe, endGameWithNoWinner)),
+      R.when(computerWon, (state) =>
+        stopPipe({
+          ...state,
+          isPlaying: false,
+          message: 'Computer won :Try again!',
+          winner: 'Computer AI',
+        }),
+      ),
 
-    (state) => ({
-      ...state,
-      stepCell: getRandomArrayItem(state.unallocatedCells, random),
-    }),
-  ]),
+      R.when(noWinner, R.compose(stopPipe, endGameWithNoWinner)),
 
+      (state) => ({
+        ...state,
+        stepCell: getRandomArrayItem(state.unallocatedCells, random),
+      }),
+    ]),
 
   [leave]: () => R.always(initialGameState),
 });

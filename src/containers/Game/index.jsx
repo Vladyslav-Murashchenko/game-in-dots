@@ -1,23 +1,11 @@
-import React, {
-  useState,
-  useMemo,
-  useEffect,
-  useReducer,
-  useRef,
-} from 'react';
+import React, { useState, useMemo, useEffect, useReducer, useRef } from 'react';
 import styled from 'styled-components';
 import * as R from 'ramda';
 import { titleCase } from 'change-case';
 
 import * as api from '../../api';
-import {
-  dateFormatter,
-  preventDefault,
-} from '../../utils';
-import gameReducer, {
-  initialGameState,
-  gameActions,
-} from './gameReducer';
+import { dateFormatter, preventDefault } from '../../utils';
+import gameReducer, { initialGameState, gameActions } from './gameReducer';
 
 import GameField from '../GameField';
 
@@ -50,8 +38,7 @@ const Game = () => {
   } = gameState;
 
   useEffect(() => {
-    api.fetchGameSettings()
-      .then(setSettings);
+    api.fetchGameSettings().then(setSettings);
   }, []);
 
   useEffect(() => {
@@ -87,10 +74,9 @@ const Game = () => {
 
     const { delay } = settings[selectedMode.value];
 
-    timerRef.current = setTimeout(R.pipe(
-      gameActions.step,
-      gameDispatch,
-    ), delay);
+    timerRef.current = setTimeout(() => {
+      gameDispatch(gameActions.step());
+    }, delay);
 
     return () => clearTimeout(timerRef.current);
   }, [stepCell, isPlaying]);
@@ -98,12 +84,12 @@ const Game = () => {
   const lineLength = selectedMode && settings[selectedMode.value].field;
   const cellsCount = lineLength && lineLength ** 2;
 
-  const handleNameChange = (e) => {
+  const handleNameChange = (name) => {
     if (playerNameError) {
       setPlayerNameError('');
     }
 
-    setPlayerName(e.target.value);
+    setPlayerName(name);
   };
 
   const handleStartGame = () => {
@@ -146,10 +132,7 @@ const Game = () => {
           error={playerNameError}
         />
         {!isPlaying && stepCell == null && (
-          <Button
-            text="Play"
-            onClick={handleStartGame}
-          />
+          <Button text="Play" onClick={handleStartGame} />
         )}
         {!isPlaying && stepCell != null && (
           <Button
@@ -157,12 +140,7 @@ const Game = () => {
             onClick={R.pipe(handleLeaveGame, handleStartGame)}
           />
         )}
-        {isPlaying && (
-          <Button
-            text="Leave"
-            onClick={handleLeaveGame}
-          />
-        )}
+        {isPlaying && <Button text="Leave" onClick={handleLeaveGame} />}
       </Form>
       <Message>{message}</Message>
       <GameField
@@ -197,7 +175,7 @@ const Form = styled.form`
   display: flex;
   flex-direction: column;
   width: 100%;
-  
+
   @media (min-width: 800px) {
     flex-direction: row;
     align-items: center;

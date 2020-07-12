@@ -8,8 +8,12 @@ const AppHeader = () => (
   <Header>
     <Heading>Game in dots</Heading>
     <Nav>
-      <ButtonStyled as={Link} to="/game">Game</ButtonStyled>
-      <ButtonStyled as={Link} to="/leader-board">Leader Board</ButtonStyled>
+      <ButtonStyled as={Link} to="/game">
+        Game
+      </ButtonStyled>
+      <ButtonStyled as={Link} to="/leader-board">
+        Leader Board
+      </ButtonStyled>
     </Nav>
   </Header>
 );
