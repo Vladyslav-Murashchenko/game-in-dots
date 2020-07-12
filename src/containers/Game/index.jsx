@@ -26,8 +26,6 @@ const Game = () => {
 
   const [gameState, gameDispatch] = useReducer(gameReducer, initialGameState);
 
-  const timerRef = useRef(null);
-
   const {
     playerCells,
     computerCells,
@@ -74,12 +72,12 @@ const Game = () => {
 
     const { delay } = settings[selectedMode.value];
 
-    timerRef.current = setTimeout(() => {
+    const timerId = setInterval(() => {
       gameDispatch(gameActions.step());
     }, delay);
 
-    return () => clearTimeout(timerRef.current);
-  }, [stepCell, isPlaying]);
+    return () => clearInterval(timerId);
+  }, [isPlaying]);
 
   const lineLength = selectedMode && settings[selectedMode.value].field;
   const cellsCount = lineLength && lineLength ** 2;
@@ -103,7 +101,6 @@ const Game = () => {
 
   const handleLeaveGame = () => {
     gameDispatch(gameActions.leave());
-    clearTimeout(timerRef.current);
   };
 
   const handleCellClick = (cell) => {
