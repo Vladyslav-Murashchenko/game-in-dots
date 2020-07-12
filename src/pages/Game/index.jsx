@@ -1,15 +1,15 @@
-import React, { useState, useMemo, useEffect, useReducer, useRef } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import styled from 'styled-components';
-import * as R from 'ramda';
-import { titleCase } from 'change-case';
 
-import * as api from '../../api';
-import { dateFormatter, preventDefault } from '../../utils';
+import { preventDefault } from '../../utils';
 import gameReducer, {
   initialGameState,
   gameActions,
   GAME_STATUS,
 } from './gameReducer';
+
+import usePostWinner from './usePostWinner';
+import useGameModes from './useGameModes';
 
 import GameField from './GameField';
 
@@ -22,9 +22,6 @@ import {
 } from '../../components';
 
 const Game = () => {
-  const [settings, setSettings] = useState(null);
-  const [selectedMode, setSelectedMode] = useState(null);
-
   const [playerName, setPlayerName] = useState('');
   const [playerNameError, setPlayerNameError] = useState('');
 
@@ -39,60 +36,21 @@ const Game = () => {
     winner,
   } = gameState;
 
-  useEffect(() => {
-    api.fetchGameSettings().then(setSettings);
-  }, []);
+  usePostWinner(winner);
 
-  useEffect(() => {
-    if (!winner) {
-      return;
-    }
-
-    const date = dateFormatter.format(new Date());
-
-    api.postWinner(winner, date);
-  }, [winner]);
-
-  const modeOptions = useMemo(() => {
-    const getModeOptions = R.pipe(
-      R.keys,
-      R.map((value) => ({
-        value,
-        label: titleCase(value),
-      })),
-    );
-
-    return getModeOptions(settings);
-  }, [settings]);
-
-  useEffect(() => {
-    setSelectedMode(R.head(modeOptions));
-  }, [modeOptions]);
+  const { selectedGameMode, setSelectedGameMode, gameModes } = useGameModes();
 
   useEffect(() => {
     if (status !== GAME_STATUS.playing) {
       return;
     }
 
-    const { delay } = settings[selectedMode.value];
-
     const timerId = setInterval(() => {
       gameDispatch(gameActions.step());
-    }, delay);
+    }, selectedGameMode.delay);
 
     return () => clearInterval(timerId);
   }, [status]);
-
-  const lineLength = selectedMode && settings[selectedMode.value].field;
-  const cellsCount = lineLength && lineLength ** 2;
-
-  const handleNameChange = (name) => {
-    if (playerNameError) {
-      setPlayerNameError('');
-    }
-
-    setPlayerName(name);
-  };
 
   const handleStartGame = () => {
     if (!playerName) {
@@ -100,7 +58,7 @@ const Game = () => {
       return;
     }
 
-    gameDispatch(gameActions.start(cellsCount, playerName));
+    gameDispatch(gameActions.start(selectedGameMode.cellsCount, playerName));
   };
 
   const handleLeaveGame = () => {
@@ -112,11 +70,27 @@ const Game = () => {
     handleStartGame();
   };
 
+  const handleNameChange = (name) => {
+    if (playerNameError) {
+      setPlayerNameError('');
+    }
+
+    setPlayerName(name);
+  };
+
+  const handleModeChange = (mode) => {
+    if (status === GAME_STATUS.finished) {
+      handleLeaveGame();
+    }
+
+    setSelectedGameMode(mode);
+  };
+
   const handleCellClick = (cell) => {
     gameDispatch(gameActions.cellClick(cell));
   };
 
-  if (!selectedMode) {
+  if (!selectedGameMode) {
     return <Loader />;
   }
 
@@ -124,16 +98,16 @@ const Game = () => {
     <Main>
       <Form onSubmit={preventDefault}>
         <ModeSelect
-          selected={selectedMode}
-          onSelect={setSelectedMode}
-          options={modeOptions}
-          disabled={status !== GAME_STATUS.preparing}
+          selected={selectedGameMode}
+          onSelect={handleModeChange}
+          options={gameModes}
+          disabled={status === GAME_STATUS.playing}
           placeholder="Pick game mode"
         />
         <NameInput
           value={playerName}
           onChange={handleNameChange}
-          disabled={status !== GAME_STATUS.preparing}
+          disabled={status === GAME_STATUS.playing}
           placeholder="Enter your name"
           error={playerNameError}
         />
@@ -149,8 +123,8 @@ const Game = () => {
       </Form>
       <Message>{message}</Message>
       <GameField
-        lineLength={lineLength}
-        cellsCount={cellsCount}
+        lineLength={selectedGameMode.lineLength}
+        cellsCount={selectedGameMode.cellsCount}
         currentStepCell={currentStepCell}
         onCellClick={handleCellClick}
         playerCells={playerCells}
