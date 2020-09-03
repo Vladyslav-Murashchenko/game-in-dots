@@ -91,8 +91,8 @@ const Button = styled.button.attrs({
 
   font-size: 1.2rem;
   text-align: left;
-  color: #83969b;
-  background: #cfd8dc;
+  color: var(--secondary3);
+  background: var(--secondary4);
   border-radius: 10px;
   cursor: pointer;
 
@@ -102,8 +102,8 @@ const Button = styled.button.attrs({
     right: 15px;
     width: 12px;
     height: 12px;
-    border-bottom: 3px solid #83969b;
-    border-right: 3px solid #83969b;
+    border-bottom: 3px solid var(--secondary3);
+    border-right: 3px solid var(--secondary3);
     transition: 0.1s;
     transform: ${({ expanded }) =>
         expanded ? 'translateY(8px)' : 'translateY(2px)'}
@@ -123,7 +123,7 @@ const Menu = styled.ul`
 
   list-style: none;
   overflow-y: auto;
-  background: #fff;
+  background: var(--primary2);
   z-index: 1;
 `;
 
@@ -134,8 +134,8 @@ const Option = styled.li`
   ${(props) =>
     props.highlighted &&
     css`
-      color: #fff;
-      background: #7a8c93;
+      color: var(--primary2);
+      background: var(--secondary2);
     `}
 `;
 

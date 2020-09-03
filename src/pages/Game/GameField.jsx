@@ -46,7 +46,7 @@ const Field = styled.div`
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  border: 1px solid #888;
+  border: 1px solid var(--secondary3);
 
   @media (min-width: 800px) {
     width: 70vw;
@@ -60,24 +60,24 @@ const Cell = styled.button`
   width: ${({ width }) => width};
   padding: 0;
   padding-top: ${({ width }) => `calc(${width} - ${cellBorderWidth * 2}px)`};
-  border: ${cellBorderWidth}px solid #888;
-  background: #fff;
+  border: ${cellBorderWidth}px solid var(--secondary3);
+  background: var(--primary2);
   cursor: crosshair;
 
   ${({ isCurrentStepCell }) =>
     isCurrentStepCell &&
     css`
-      background: #0fc9de;
+      background: var(--secondary5);
     `}
   ${({ isComputerCell }) =>
     isComputerCell &&
     css`
-      background: #993333;
+      background: var(--secondary6);
     `}
   ${({ isPlayerCell }) =>
     isPlayerCell &&
     css`
-      background: #339933;
+      background: var(--secondary7);
     `}
 `;
 

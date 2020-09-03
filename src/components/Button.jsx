@@ -14,8 +14,8 @@ const Button = styled.button.attrs((props) => ({
   font-size: 1.2rem;
   text-decoration: none;
   text-transform: uppercase;
-  color: #ffffff;
-  background: #7a8c93;
+  color: var(--primary2);
+  background: var(--secondary2);
   border-radius: 10px;
   cursor: pointer;
 `;

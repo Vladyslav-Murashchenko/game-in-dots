@@ -46,16 +46,17 @@ const Wrapper = styled.div`
 
 const Input = styled.input`
   padding: 13px 25px;
-  border: 2px solid ${({ hasError }) => (hasError ? '#993333' : '#cfd8dc')};
-  background-color: #f3f3f3;
+  border: 2px solid
+    ${({ hasError }) => (hasError ? 'var(--secondary6)' : 'var(--secondary4)')};
+  background-color: var(--secondary1);
   font-size: 1.2rem;
-  color: #707577;
+  color: var(--primary1);
   border-radius: 10px;
 `;
 
 const Error = styled.p`
   position: absolute;
-  color: #993333;
+  color: var(--secondary6);
   margin: 0;
   top: -20px;
   left: 5px;

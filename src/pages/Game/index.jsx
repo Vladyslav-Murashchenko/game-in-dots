@@ -165,7 +165,7 @@ const Form = styled.form`
 const Message = styled.p`
   min-height: 1.6rem;
   margin: 20px auto;
-  color: #99a6ab;
+  color: var(--secondary3);
   font-size: 1.6rem;
   line-height: 2rem;
 `;

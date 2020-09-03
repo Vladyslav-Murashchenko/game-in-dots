@@ -50,7 +50,7 @@ const Wrapper = styled.div`
 const Heading = styled.h2`
   margin: 0 0 1.5rem;
   font-size: 2rem;
-  color: #707577;
+  color: var(--primary1);
   text-transform: uppercase;
 `;
 
@@ -66,7 +66,7 @@ const Winner = styled.li`
   justify-content: space-between;
 
   padding: 1.5vw 3vw;
-  background: #cfd8dc;
+  background: var(--secondary4);
 
   margin: 10px 0;
 
@@ -78,12 +78,12 @@ const Winner = styled.li`
 const Name = styled.div`
   margin-right: 50px;
 
-  color: #707577;
+  color: var(--primary1);
   font-size: 1.6rem;
 `;
 
 const WinDate = styled.div`
-  color: #707577;
+  color: var(--primary1);
   font-size: 1.6rem;
 `;
 

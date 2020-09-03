@@ -24,7 +24,7 @@ const Header = styled.header`
   align-items: center;
   justify-content: center;
   padding: 1vw 2vw;
-  background: #f1f1f1;
+  background: var(--secondary1);
   box-shadow: 0px 0px 10px #333333;
 
   @media (min-width: 620px) {
@@ -35,7 +35,7 @@ const Header = styled.header`
 const Heading = styled.h1`
   text-transform: uppercase;
   font-size: 2.5rem;
-  color: #707577;
+  color: var(--primary1);
   margin: 0;
 `;
 

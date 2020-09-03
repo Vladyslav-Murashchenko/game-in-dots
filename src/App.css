@@ -1,3 +1,16 @@
+:root {
+  --primary1: #707577;
+  --primary2: #ffffff;
+
+  --secondary1: #f1f1f1;
+  --secondary2: #7a8c93;
+  --secondary3: #83969b;
+  --secondary4: #cfd8dc;
+  --secondary5: #0fc9de;
+  --secondary6: #993333;
+  --secondary7: #339933;
+}
+
 body {
   display: flex;
   font-family: sans-serif;
