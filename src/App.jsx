@@ -13,17 +13,19 @@ import LeaderBoard from './pages/LeaderBoard';
 
 import { AppHeader } from './components';
 
+import Routes from './Routes';
+
 const App = () => (
   <Router>
     <AppHeader />
     <Switch>
-      <Route path="/game">
+      <Route path={Routes.GAME}>
         <Game />
       </Route>
-      <Route path="/leader-board">
+      <Route path={Routes.LEADER_BOARD}>
         <LeaderBoard />
       </Route>
-      <Redirect to="/game" />
+      <Redirect to={Routes.GAME} />
     </Switch>
   </Router>
 );

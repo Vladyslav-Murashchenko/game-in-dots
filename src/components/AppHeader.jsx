@@ -4,14 +4,16 @@ import { Link } from 'react-router-dom';
 
 import Button from './Button';
 
+import Routes from '../Routes';
+
 const AppHeader = () => (
   <Header>
     <Heading>Game in dots</Heading>
     <Nav>
-      <ButtonStyled as={Link} to="/game">
+      <ButtonStyled as={Link} to={Routes.GAME}>
         Game
       </ButtonStyled>
-      <ButtonStyled as={Link} to="/leader-board">
+      <ButtonStyled as={Link} to={Routes.LEADER_BOARD}>
         Leader Board
       </ButtonStyled>
     </Nav>
