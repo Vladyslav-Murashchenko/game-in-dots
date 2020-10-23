@@ -45,6 +45,8 @@ export const initialGameState = {
   winner: null,
 };
 
+const isFirstStep = (state) => state.currentStepCell === null;
+
 const noWinner = (state) =>
   !state.unallocatedCells.length &&
   state.computerCells.length === state.playerCells.length;
@@ -107,14 +109,14 @@ const gameReducer = createReducer({
         }),
       ),
 
-      (state) => ({
+      R.when(R.compose(R.not, isFirstStep), (state) => ({
         ...state,
         computerCells: R.append(state.currentStepCell, state.computerCells),
         unallocatedCells: R.without(
           [state.currentStepCell],
           state.unallocatedCells,
         ),
-      }),
+      })),
 
       R.when(computerWon, (state) =>
         stopPipe({

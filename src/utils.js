@@ -37,16 +37,29 @@ export const getRandomArrayItem = (arr, random = 0.5) => {
 
 const stopPipeSymbol = Symbol('break pipe');
 
-const pipeStopped = (value) => value && value[stopPipeSymbol];
+const isPipeStopped = (value) => value && value[stopPipeSymbol];
 
-export const stopPipe = R.unless(pipeStopped, (value) => ({
+export const stopPipe = R.unless(isPipeStopped, (value) => ({
   value,
   [stopPipeSymbol]: true,
 }));
 
-export const pipeWithStop = R.pipeWith((f, res) =>
-  pipeStopped(res) ? res.value : f(res),
-);
+export const pipeWithStop = (fns) => (...firstFnArgs) => {
+  let result;
+
+  // eslint-disable-next-line no-plusplus
+  for (let i = 0; i < fns.length; i++) {
+    const fn = fns[i];
+
+    result = i === 0 ? fn(...firstFnArgs) : fn(result);
+
+    if (isPipeStopped(result)) {
+      return result.value;
+    }
+  }
+
+  return result;
+};
 
 export const dateFormatter = new Intl.DateTimeFormat('en-GB', {
   hour: '2-digit',
