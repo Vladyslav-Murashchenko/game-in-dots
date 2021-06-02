@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useReducer } from 'react';
 import styled from 'styled-components';
+import preventDefault from '../../utils/preventDefault';
 
-import { preventDefault } from '../../utils';
 import gameReducer, {
   initialGameState,
-  gameActions,
+  start,
+  step,
+  tryTakeCell,
+  leave,
   GAME_STATUS,
-} from './gameReducer';
+} from './gameSlice';
 
 import usePostWinner from './usePostWinner';
 import useGameModes from './useGameModes';
@@ -25,7 +28,7 @@ const Game = () => {
   const [playerName, setPlayerName] = useState('');
   const [playerNameError, setPlayerNameError] = useState('');
 
-  const [gameState, gameDispatch] = useReducer(gameReducer, initialGameState);
+  const [gameState, dispatch] = useReducer(gameReducer, initialGameState);
 
   const {
     playerCells,
@@ -46,7 +49,7 @@ const Game = () => {
     }
 
     const timerId = setInterval(() => {
-      gameDispatch(gameActions.step());
+      dispatch(step());
     }, selectedGameMode.delay);
 
     return () => clearInterval(timerId);
@@ -58,11 +61,16 @@ const Game = () => {
       return;
     }
 
-    gameDispatch(gameActions.start(selectedGameMode.cellsCount, playerName));
+    dispatch(
+      start({
+        playerName,
+        cellsCount: selectedGameMode.cellsCount,
+      }),
+    );
   };
 
   const handleLeaveGame = () => {
-    gameDispatch(gameActions.leave());
+    dispatch(leave());
   };
 
   const handleRestartGame = () => {
@@ -87,7 +95,7 @@ const Game = () => {
   };
 
   const handleCellClick = (cell) => {
-    gameDispatch(gameActions.cellClick(cell));
+    dispatch(tryTakeCell(cell));
   };
 
   if (!selectedGameMode) {

@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import * as api from '../../api';
-import { dateFormatter } from '../../utils';
+import formatDate from '../../utils/formatDate';
 
 const usePostWinner = (winner) => {
   useEffect(() => {
@@ -8,9 +8,7 @@ const usePostWinner = (winner) => {
       return;
     }
 
-    const date = dateFormatter.format(new Date());
-
-    api.postWinner(winner, date);
+    api.postWinner(winner, formatDate(new Date()));
   }, [winner]);
 };
 
